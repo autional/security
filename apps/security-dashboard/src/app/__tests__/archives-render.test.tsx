@@ -24,7 +24,7 @@ vi.mock('react-i18next', () => ({
 	}),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	usePermission: () => ({ can: () => true }),
 	useCurrentRole: () => 'security_admin',
 	useAuth: () => ({ currentTenantId: 'tenant-test' }),

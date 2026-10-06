@@ -16,7 +16,7 @@ vi.mock('@/components/nhi/NhiDetailDrawer', () => ({
 	default: () => null,
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	usePermission: vi.fn(() => ({
 		can: vi.fn(() => true),
 		canAny: vi.fn(() => true),

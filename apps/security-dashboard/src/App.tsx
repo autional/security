@@ -12,8 +12,8 @@ import {
 	TenantRootRedirect,
 	useBranding,
 	BrandingInitializer,
-} from '@autional-cn/shared';
-import { ErrorBoundary } from '@autional-cn/ui';
+} from '@autional/shared';
+import { ErrorBoundary } from '@autional/ui';
 import ScrollToTop from './components/ScrollToTop';
 import { Spin } from 'antd';
 

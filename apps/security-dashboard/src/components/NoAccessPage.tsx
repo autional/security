@@ -3,8 +3,8 @@
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'antd';
-import { Result } from '@autional-cn/ui';
-import { useLogout, useTenantSlugFromUrl } from '@autional-cn/shared';
+import { Result } from '@autional/ui';
+import { useLogout, useTenantSlugFromUrl } from '@autional/shared';
 
 interface NoAccessPageProps {
 	/**

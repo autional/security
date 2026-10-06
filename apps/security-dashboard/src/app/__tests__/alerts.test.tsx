@@ -11,7 +11,7 @@ vi.mock('@/hooks/use-security-queries', () => ({
 	useAdminUsers: () => ({ data: { items: [] }, isFetching: false }),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	useAuthStore: vi.fn(() => ({
 		user: { tenant_id: 'test-tenant' },
 		currentTenantId: 'test-tenant',

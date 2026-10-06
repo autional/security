@@ -1,6 +1,6 @@
 'use client';
 
-import { usePermission, useCurrentRole } from '@autional-cn/shared';
+import { usePermission, useCurrentRole } from '@autional/shared';
 
 interface CanProps {
 	/** 资源:action 权限字符串，如 "anomaly:update" */

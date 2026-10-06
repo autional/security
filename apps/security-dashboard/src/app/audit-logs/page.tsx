@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { DataTable, Drawer } from '@autional-cn/ui/antd';
-import type { DataTableColumns } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { DataTable, Drawer } from '@autional/ui/antd';
+import type { DataTableColumns } from '@autional/ui/antd';
+import { ConsolePageHeader } from '@autional/ui';
 import { Card, Input, Select, DatePicker, Button, Tag, Spin, Empty, Space, Descriptions, Segmented, Tooltip } from 'antd';
 import { ExternalLink, RefreshCw, Search } from 'lucide-react';
 

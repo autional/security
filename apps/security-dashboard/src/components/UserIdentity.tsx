@@ -8,7 +8,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { Tooltip } from 'antd';
-import { useTenantSlug } from '@autional-cn/shared';
+import { useTenantSlug } from '@autional/shared';
 import { useAdminUsers } from '@/hooks/use-security-queries';
 
 function shortId(id: string): string {

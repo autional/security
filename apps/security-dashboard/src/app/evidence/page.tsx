@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable, Drawer } from '@autional-cn/ui/antd';
+import { DataTable, Drawer } from '@autional/ui/antd';
 import { Card, Tag, Button, Space, Descriptions, message, Typography, Row, Col, Statistic, Select, Spin } from 'antd';
 import {
 	Eye,

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { DataTable } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Card, Row, Col, Statistic, Descriptions, Badge, Spin, Tag } from 'antd';
@@ -14,7 +14,7 @@ import {
 	ShieldCheck,
 	Smartphone,
 } from 'lucide-react';
-import { useTenantSlug } from '@autional-cn/shared';
+import { useTenantSlug } from '@autional/shared';
 import { getSecurityUserProfile } from '@/lib/api';
 import { UserIdentity } from '@/components/UserIdentity';
 import { useTranslation } from 'react-i18next';

@@ -55,7 +55,7 @@ manualChunks: {
   'vendor-ui': ['antd', '@ant-design/icons'],
   'vendor-charts': ['recharts'],
   'vendor-query': ['@tanstack/react-query'],  // 新增
-  'shared-api': ['@autional-cn/shared'],
+  'shared-api': ['@autional/shared'],
   'api.generated': ['./src/lib/api.generated.ts'],
 }
 ```

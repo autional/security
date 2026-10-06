@@ -1,15 +1,15 @@
 {
-  "name": "@autional-cn/security",
+  "name": "@autional/security",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @autional-cn/security-dashboard dev",
-    "build": "pnpm --filter @autional-cn/security-dashboard... build",
-    "preview": "pnpm --filter @autional-cn/security-dashboard preview",
-    "typecheck": "pnpm --filter @autional-cn/security-dashboard typecheck",
-    "lint": "pnpm --filter @autional-cn/security-dashboard lint",
-    "test": "pnpm --filter @autional-cn/security-dashboard test"
+    "dev": "pnpm --filter @autional/security-dashboard dev",
+    "build": "pnpm --filter @autional/security-dashboard... build",
+    "preview": "pnpm --filter @autional/security-dashboard preview",
+    "typecheck": "pnpm --filter @autional/security-dashboard typecheck",
+    "lint": "pnpm --filter @autional/security-dashboard lint",
+    "test": "pnpm --filter @autional/security-dashboard test"
   },
   "packageManager": "pnpm@11.0.8",
   "engines": {

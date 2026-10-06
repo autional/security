@@ -5,7 +5,7 @@ import React from 'react';
 const mockCan = vi.fn<(permission: string) => boolean>();
 const mockRole = vi.fn<() => string | null>();
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	usePermission: () => ({ can: (permission: string) => mockCan(permission) }),
 	useCurrentRole: () => mockRole(),
 }));

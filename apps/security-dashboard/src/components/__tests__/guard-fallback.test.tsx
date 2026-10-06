@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 // 真 shared 守卫链（rc.21 精确角色 + fallback 透传）——验证 S-75 修复的落点：
 // 非准入角色渲染 NoAccessPage 而非 `return null` 白屏。
-import { SecurityGuard, SecurityAdminGuard, useAuthStore } from '@autional-cn/shared';
+import { SecurityGuard, SecurityAdminGuard, useAuthStore } from '@autional/shared';
 import NoAccessPage from '../NoAccessPage';
 
 const NO_ACCESS_TEXT = '抱歉，您当前账号的角色无权访问此页面。如需访问，请切换具备相应权限的账号。';

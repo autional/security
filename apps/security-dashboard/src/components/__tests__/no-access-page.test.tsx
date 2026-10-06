@@ -6,7 +6,7 @@ import React from 'react';
 const mockLogout = vi.fn();
 const mockSlug = vi.fn<() => string | null>();
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	useLogout: () => mockLogout,
 	useTenantSlugFromUrl: () => mockSlug(),
 }));

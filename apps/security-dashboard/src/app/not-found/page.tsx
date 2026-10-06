@@ -3,8 +3,8 @@
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Button } from 'antd';
-import { Result } from '@autional-cn/ui';
-import { useTenantSlugFromUrl } from '@autional-cn/shared';
+import { Result } from '@autional/ui';
+import { useTenantSlugFromUrl } from '@autional/shared';
 
 /**
  * NotFoundPage — 404 页（TASK-427，AC-002）

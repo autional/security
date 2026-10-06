@@ -5,8 +5,8 @@ import { Tabs, Spin, Descriptions, Tag, Empty } from 'antd';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAgentById, useRobotById, useDeviceById } from '@/hooks/use-security-queries';
-import { Alert } from '@autional-cn/ui';
-import { Drawer } from '@autional-cn/ui/antd';
+import { Alert } from '@autional/ui';
+import { Drawer } from '@autional/ui/antd';
 
 interface NhiDetailDrawerProps {
 	entityType: 'agent' | 'robot' | 'device';

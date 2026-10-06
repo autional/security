@@ -42,7 +42,7 @@ vi.mock('react-router', () => ({
 	),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	useAuth: vi.fn(() => ({
 		user: { tenant_id: 'test-tenant' },
 		currentTenantId: 'test-tenant',

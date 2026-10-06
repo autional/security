@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import type { DataTableColumns } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { DataTable } from '@autional/ui/antd';
+import type { DataTableColumns } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { Card, Button, Tag, Spin, Empty, Space, Row, Col, Statistic, Input, Tabs, Descriptions, Tooltip, Typography } from 'antd';
 import {
 	BadgeCheck,
@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 import dayjs from 'dayjs';
-import { useAuth } from '@autional-cn/shared';
+import { useAuth } from '@autional/shared';
 import {
 	useHashChain,
 	useMerkleRoot,

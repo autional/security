@@ -8,7 +8,7 @@ import { addAnomalyComment } from '@/lib/api.generated';
 import { message } from '@/lib/antd-app';
 import { Can } from '@/components/Can';
 import { useTranslation } from 'react-i18next';
-import type { AnomalyCommentResponse } from '@autional-cn/shared/generated/types';
+import type { AnomalyCommentResponse } from '@autional/shared/generated/types';
 
 interface AnomalyCommentsProps {
 	anomalyId: string;

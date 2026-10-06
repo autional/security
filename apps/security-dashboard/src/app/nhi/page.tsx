@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
+import { DataTable } from '@autional/ui/antd';
 import { Card, Row, Col, Statistic, Tag, Tabs, Button, Popconfirm, message } from 'antd';
 import {
 	Bot,
@@ -25,8 +25,8 @@ import {
 } from '@/hooks/use-security-queries';
 import NhiDetailDrawer from '@/components/nhi/NhiDetailDrawer';
 import { Can } from '@/components/Can';
-import { extractList } from '@autional-cn/shared';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { extractList } from '@autional/shared';
+import { ConsolePageHeader } from '@autional/ui';
 
 const STATUS_COLORS: Record<string, string> = {
 	active: 'green',

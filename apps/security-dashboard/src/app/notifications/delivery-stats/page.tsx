@@ -26,8 +26,8 @@ import {
 	Legend,
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
-import { GeneratedApi } from '@autional-cn/shared';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { GeneratedApi } from '@autional/shared';
+import { ConsolePageHeader } from '@autional/ui';
 
 // S-63：只读四件套全走 admin 平面（security_admin 可达的租户级读族）——
 // stats/read-report/trend 为 notification 服务 twin，dashboard 为 communication 渠道口径。

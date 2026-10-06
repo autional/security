@@ -12,7 +12,7 @@ vi.mock('@/hooks/use-security-queries', () => ({
 	useTerminateSession: () => mockUseTerminateSession(),
 }));
 
-vi.mock('@autional-cn/shared', () => ({
+vi.mock('@autional/shared', () => ({
 	useAuthStore: vi.fn(() => ({
 		user: { tenant_id: 'test-tenant' },
 		currentTenantId: 'test-tenant',

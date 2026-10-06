@@ -12,8 +12,8 @@ import {
 	logout,
 	getAUTH_PAGES_URL,
 	useTenantSlug,
-} from '@autional-cn/shared';
-import { authRefreshPost } from '@autional-cn/shared/generated/api';
+} from '@autional/shared';
+import { authRefreshPost } from '@autional/shared/generated/api';
 import { useTranslation } from 'react-i18next';
 import { markSessionDegraded, SESSION_DEGRADED_NOTICE_KEY } from '@/lib/session-degrade';
 

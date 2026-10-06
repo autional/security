@@ -18,8 +18,8 @@ import {
 	Shield,
 } from 'lucide-react';
 import { Layout, Menu, Button, Typography, Breadcrumb } from 'antd';
-import { useAuth, useLogout, usePortalCatalog, useTenantSlug } from '@autional-cn/shared';
-import { AppShell, LanguageSwitcher, PortalSwitcher, ThemeToggle, UserMenu } from '@autional-cn/ui';
+import { useAuth, useLogout, usePortalCatalog, useTenantSlug } from '@autional/shared';
+import { AppShell, LanguageSwitcher, PortalSwitcher, ThemeToggle, UserMenu } from '@autional/ui';
 import SSEEventStream from './SSEEventStream';
 import { message, notification } from '@/lib/antd-app';
 import { consumeSessionDegraded, SESSION_DEGRADED_NOTICE_KEY } from '@/lib/session-degrade';

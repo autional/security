@@ -17,10 +17,10 @@ import type {
 	AnomalyResponse,
 	AnomalyTimelineResponse,
 	AuditLogResponse,
-} from '@autional-cn/shared/generated/types';
+} from '@autional/shared/generated/types';
 import AnomalyComments from './AnomalyComments';
-import { Alert } from '@autional-cn/ui';
-import { Drawer } from '@autional-cn/ui/antd';
+import { Alert } from '@autional/ui';
+import { Drawer } from '@autional/ui/antd';
 import { UserIdentity } from '@/components/UserIdentity';
 import { severityColor, severityLabel } from '@/lib/enums';
 import { anomalyDescription } from '@/lib/anomaly';

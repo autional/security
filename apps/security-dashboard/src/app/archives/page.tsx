@@ -9,10 +9,10 @@ import {
 	RefreshCw,
 	ShieldCheck,
 } from 'lucide-react';
-import { useAuth } from '@autional-cn/shared';
+import { useAuth } from '@autional/shared';
 import { useArchiveStatus, useTriggerArchive, useHashChain } from '@/hooks/use-security-queries';
 import { useTranslation } from 'react-i18next';
-import { Alert } from '@autional-cn/ui';
+import { Alert } from '@autional/ui';
 import { Can } from '@/components/Can';
 
 const { Title, Text } = Typography;

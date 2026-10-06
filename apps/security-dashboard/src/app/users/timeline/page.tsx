@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { DataTable } from '@autional/ui/antd';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Card, Pagination, Spin, Tag, Timeline } from 'antd';
 import { AlertTriangle, ShieldCheck, UserCircle } from 'lucide-react';
-import { useTenantSlug } from '@autional-cn/shared';
+import { useTenantSlug } from '@autional/shared';
 import { getSecurityUserTimeline } from '@/lib/api';
 import { formatTimelineTime, normalizeTimestamp } from '@/lib/format';
 import { anomalyTypeLabel, severityColor, severityLabel } from '@/lib/enums';

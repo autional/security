@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import type { DataTableColumns } from '@autional-cn/ui/antd';
+import { DataTable } from '@autional/ui/antd';
+import type { DataTableColumns } from '@autional/ui/antd';
 import { Card, Form, Input, Button, Switch, Select, Skeleton, Tabs, Space, Tag, Modal, Spin, Descriptions, Badge, Empty } from 'antd';
 import {
 	Database,
@@ -26,14 +26,14 @@ import {
 } from '@/hooks/use-security-queries';
 import { message, modal } from '@/lib/antd-app';
 import { useTranslation } from 'react-i18next';
-import { AuditStatsOnly } from '@autional-cn/shared';
-import { Alert, ConsolePageHeader, useTheme } from '@autional-cn/ui';
+import { AuditStatsOnly } from '@autional/shared';
+import { Alert, ConsolePageHeader, useTheme } from '@autional/ui';
 import { Can } from '@/components/Can';
 import type {
 	RetentionPolicyResponse,
 	SIEMConnectorResponse,
 	SIEMConnectorRequest,
-} from '@autional-cn/shared/generated/types';
+} from '@autional/shared/generated/types';
 
 const STORAGE_KEY = 'security-dashboard-settings';
 // 与 main.tsx <ThemeProvider storageKey> 同名：settings 的主题选择直写该键并即时翻转 ui 主题系统。

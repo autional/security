@@ -41,8 +41,8 @@ import {
 import { useHashChain, useComplianceSelfScore } from '@/hooks/use-security-queries';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import { useAuth, useTenantSlug } from '@autional-cn/shared';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { useAuth, useTenantSlug } from '@autional/shared';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { UserIdentity } from '@/components/UserIdentity';
 import { anomalyDescription } from '@/lib/anomaly';
 import { anomalyTypeLabel, severityColor, severityLabel } from '@/lib/enums';

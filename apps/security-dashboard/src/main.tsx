@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { ThemeProvider } from '@autional-cn/ui';
+import { ThemeProvider } from '@autional/ui';
 import { AntdAppProvider } from './lib/antd-app';
 import App from './App';
 import './non-tenant-segments';

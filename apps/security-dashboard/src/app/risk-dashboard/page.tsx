@@ -1,13 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
+import { DataTable } from '@autional/ui/antd';
 import { Card, Row, Col, Statistic, Tag, Spin, Tooltip, Button } from 'antd';
 import { AlertTriangle, ShieldAlert, ShieldCheck, TrendingUp } from 'lucide-react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { getRiskDashboard } from '@/lib/api';
-import { Alert, ConsolePageHeader } from '@autional-cn/ui';
+import { Alert, ConsolePageHeader } from '@autional/ui';
 import { UserIdentity } from '@/components/UserIdentity';
 
 dayjs.extend(utc);

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@autional-cn/shared';
-import { adminSessions, adminUsers } from '@autional-cn/shared/generated/api';
+import { apiClient } from '@autional/shared';
+import { adminSessions, adminUsers } from '@autional/shared/generated/api';
 import {
 	getActiveSessionCount,
 	terminateSession,

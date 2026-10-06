@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import { DataTable } from '@autional/ui/antd';
+import { ConsolePageHeader } from '@autional/ui';
 import { Card, Row, Col, Statistic, Spin } from 'antd';
 import { AlertTriangle, Clock, ShieldAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

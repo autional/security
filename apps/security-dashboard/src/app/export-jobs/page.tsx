@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DataTable } from '@autional-cn/ui/antd';
-import type { DataTableColumns } from '@autional-cn/ui/antd';
+import { DataTable } from '@autional/ui/antd';
+import type { DataTableColumns } from '@autional/ui/antd';
 import { Card, Tag, Button, Spin, Empty, Space, Badge, Modal, Form, Select, DatePicker, Input, Progress, Tooltip } from 'antd';
 import { Download, Plus } from 'lucide-react';
 
@@ -11,8 +11,8 @@ import { useExportJobs, useDownloadExport } from '@/hooks/use-security-queries';
 import { useCreateExportJob } from '@/hooks/use-audit-logs';
 import { message } from '@/lib/antd-app';
 import { useTranslation } from 'react-i18next';
-import type { ExportJobResponse } from '@autional-cn/shared/generated/types';
-import { ConsolePageHeader } from '@autional-cn/ui';
+import type { ExportJobResponse } from '@autional/shared/generated/types';
+import { ConsolePageHeader } from '@autional/ui';
 import { Can } from '@/components/Can';
 import { levelLabel } from '@/lib/enums';
 
