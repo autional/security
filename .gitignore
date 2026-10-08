@@ -5,3 +5,7 @@ dist/
 .env
 .env.local
 *.log
+
+# B3 生成物（scripts/gen-env.mjs）——勿手改、勿入库
+apps/security-dashboard/public/env.js
+apps/security-dashboard/public/robots.txt
