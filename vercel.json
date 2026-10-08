@@ -7,15 +7,15 @@
   "rewrites": [
     {
       "source": "/bff/:path*",
-      "destination": "https://api.autional.com/bff/:path*"
+      "destination": "https://api.autional.cn/bff/:path*"
     },
     {
       "source": "/api/v1/:path*",
-      "destination": "https://api.autional.com/api/v1/:path*"
+      "destination": "https://api.autional.cn/api/v1/:path*"
     },
     {
       "source": "/ready",
-      "destination": "https://api.autional.com/ready"
+      "destination": "https://api.autional.cn/ready"
     },
     {
       "source": "/oauth/callback",
@@ -23,11 +23,11 @@
     },
     {
       "source": "/oauth/:path*",
-      "destination": "https://api.autional.com/oauth/:path*"
+      "destination": "https://api.autional.cn/oauth/:path*"
     },
     {
       "source": "/tenant/:path*",
-      "destination": "https://api.autional.com/tenant/:path*"
+      "destination": "https://api.autional.cn/tenant/:path*"
     },
     {
       "source": "/(.*)",

@@ -271,7 +271,7 @@ export default function OverviewPage() {
 					{/* S-73（fix-security-w5）：统计卡接对应路由（原全页零 pointer/零 href） */}
 					<Col xs={24} sm={12} lg={4}>
 						<Link to={`/${slug ?? ''}/audit-logs`} className="block h-full">
-							<Card className="cursor-pointer h-full transition-shadow hover:shadow-md">
+							<Card className="cursor-pointer h-full transition-shadow hover:shadow-card">
 								<Statistic
 									title={t('overview.totalAuditLogs')}
 									value={stats.totalLogs}
@@ -282,7 +282,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} sm={12} lg={4}>
 						<Link to={`/${slug ?? ''}/anomalies`} className="block h-full">
-							<Card className="cursor-pointer h-full transition-shadow hover:shadow-md">
+							<Card className="cursor-pointer h-full transition-shadow hover:shadow-card">
 								<Statistic
 									title={t('overview.pendingAnomalies')}
 									value={stats.openAnomalies}
@@ -294,7 +294,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} sm={12} lg={4}>
 						<Link to={`/${slug ?? ''}/sessions`} className="block h-full">
-							<Card className="cursor-pointer h-full transition-shadow hover:shadow-md">
+							<Card className="cursor-pointer h-full transition-shadow hover:shadow-card">
 								<Statistic
 									title={t('overview.activeSessions')}
 									value={stats.activeSessions}
@@ -305,7 +305,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} sm={12} lg={4}>
 						<Link to={`/${slug ?? ''}/compliance`} className="block h-full">
-							<Card className="cursor-pointer h-full transition-shadow hover:shadow-md">
+							<Card className="cursor-pointer h-full transition-shadow hover:shadow-card">
 								<div className="flex items-center justify-between mb-2">
 									<span className="text-sm text-neutral-600">{t('overview.complianceScore')}</span>
 									<BadgeCheck size="1em" className="text-success" />
@@ -335,7 +335,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} sm={12} lg={4}>
 						<Link to={`/${slug ?? ''}/hash-chain`} className="block h-full">
-							<Card className="cursor-pointer h-full transition-shadow hover:shadow-md">
+							<Card className="cursor-pointer h-full transition-shadow hover:shadow-card">
 								<div className="flex items-center justify-between mb-2">
 									<span className="text-sm text-neutral-600">{t('overview.hashChainIntegrity')}</span>
 									{stats.hashChainValid === null ? (
@@ -365,7 +365,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} sm={12} lg={4}>
 						<Link to={`/${slug ?? ''}/risk-dashboard`} className="block h-full">
-							<Card className="cursor-pointer h-full transition-shadow hover:shadow-md">
+							<Card className="cursor-pointer h-full transition-shadow hover:shadow-card">
 								<div className="flex items-center justify-between mb-2">
 									<span className="text-sm text-neutral-600">{t('overview.riskLevel')}</span>
 									<AlertCircle size="1em" className="text-danger" />
@@ -489,7 +489,7 @@ export default function OverviewPage() {
 										{serviceStatuses.map((svc: any) => (
 											<div
 												key={svc.name}
-												className="flex flex-col items-center p-2 rounded border border-neutral-200 hover:bg-neutral-50 transition-colors"
+												className="flex flex-col items-center p-2 rounded-xs border border-neutral-200 hover:bg-neutral-50 transition-colors"
 											>
 												<div
 													className={`w-3 h-3 rounded-full mb-2 ${serviceStatusColor(svc.status)}`}
@@ -513,28 +513,28 @@ export default function OverviewPage() {
 					<Col xs={24} lg={8}>
 						<Card title={t('overview.alertChannelStatus')} className="h-full">
 							<div className="space-y-3">
-								<div className="flex items-center justify-between p-2 rounded border border-neutral-200">
+								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
 									<div className="flex items-center gap-2">
 										<Cloud size="1em" className="text-info" />
 										<span className="text-sm">{t('overview.emailAlert')}</span>
 									</div>
 									<Tag color="success">{t('overview.healthy')}</Tag>
 								</div>
-								<div className="flex items-center justify-between p-2 rounded border border-neutral-200">
+								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
 									<div className="flex items-center gap-2">
 										<Zap size="1em" className="text-warning" />
 										<span className="text-sm">{t('overview.smsAlert')}</span>
 									</div>
 									<Tag color="success">{t('overview.healthy')}</Tag>
 								</div>
-								<div className="flex items-center justify-between p-2 rounded border border-neutral-200">
+								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
 									<div className="flex items-center gap-2">
 										<Plug size="1em" className="text-chart-7" />
 										<span className="text-sm">{t('overview.siemPush')}</span>
 									</div>
 									<Tag color="default">{t('overview.notConfigured')}</Tag>
 								</div>
-								<div className="flex items-center justify-between p-2 rounded border border-neutral-200">
+								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
 									<div className="flex items-center gap-2">
 										<Radar size="1em" className="text-info" />
 										<span className="text-sm">{t('overview.webhook')}</span>

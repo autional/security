@@ -395,7 +395,7 @@ export default function AuditLogsPage() {
 								{(detail as any).message}
 							</Descriptions.Item>
 							<Descriptions.Item label={t('auditLogs.detailMetadata')}>
-								<pre className="bg-neutral-50 p-2 rounded text-xs overflow-auto max-h-60">
+								<pre className="bg-neutral-50 p-2 rounded-xs text-xs overflow-auto max-h-60">
 									{JSON.stringify((detail as any).metadata || {}, null, 2)}
 								</pre>
 							</Descriptions.Item>
