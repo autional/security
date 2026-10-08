@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { DataTable } from '@autional/ui/antd';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { Card, Row, Col, Statistic, Spin } from 'antd';
 import { AlertTriangle, Clock, ShieldAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,7 @@ export default function SocKpiPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader title={t('socKpi.title', 'SOC KPIs')} />
+			<AppPageHeader title={t('socKpi.title', 'SOC KPIs')} />
 
 			<Row gutter={[16, 16]} className="mb-4">
 				{statCards.map((c) => (

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DataTable } from '@autional/ui/antd';
 import type { DataTableColumns } from '@autional/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { Card, Button, Tag, Spin, Empty, Space, Row, Col, Statistic, Input, Tabs, Descriptions, Tooltip, Typography } from 'antd';
 import {
 	BadgeCheck,
@@ -326,7 +326,7 @@ export default function HashChainPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader title={t('hashChain.title')} />
+			<AppPageHeader title={t('hashChain.title')} />
 
 			<Tabs
 				activeKey={activeTab}

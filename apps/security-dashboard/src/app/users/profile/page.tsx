@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { DataTable } from '@autional/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Card, Row, Col, Statistic, Descriptions, Badge, Spin, Tag } from 'antd';
@@ -135,7 +135,7 @@ export default function UserSecurityProfilePage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={
 					<>
 						{t('usersProfile.title')}

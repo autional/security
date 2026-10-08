@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { DataTable } from '@autional/ui/antd';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Card, Pagination, Spin, Tag, Timeline } from 'antd';
@@ -91,7 +91,7 @@ export default function UserSecurityTimelinePage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={
 					<>
 						{t('usersTimeline.title')}

@@ -12,7 +12,7 @@ import { useCreateExportJob } from '@/hooks/use-audit-logs';
 import { message } from '@/lib/antd-app';
 import { useTranslation } from 'react-i18next';
 import type { ExportJobResponse } from '@autional/shared/generated/types';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { Can } from '@/components/Can';
 import { levelLabel } from '@/lib/enums';
 
@@ -181,7 +181,7 @@ export default function ExportJobsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('exportJobs.title')}
 				actions={
 					<>

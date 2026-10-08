@@ -27,7 +27,7 @@ import {
 import { message, modal } from '@/lib/antd-app';
 import { useTranslation } from 'react-i18next';
 import { AuditStatsOnly } from '@autional/shared';
-import { Alert, ConsolePageHeader, useTheme } from '@autional/ui';
+import { Alert, AppPageHeader, useTheme } from '@autional/ui';
 import { Can } from '@/components/Can';
 import type {
 	RetentionPolicyResponse,
@@ -559,7 +559,7 @@ export default function SettingsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader title={t('settings.title')} />
+			<AppPageHeader title={t('settings.title')} />
 			<Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
 		</div>
 	);

@@ -7,7 +7,7 @@ import { AlertTriangle, ShieldAlert, ShieldCheck, TrendingUp } from 'lucide-reac
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { getRiskDashboard } from '@/lib/api';
-import { Alert, ConsolePageHeader } from '@autional/ui';
+import { Alert, AppPageHeader } from '@autional/ui';
 import { UserIdentity } from '@/components/UserIdentity';
 
 dayjs.extend(utc);
@@ -112,7 +112,7 @@ export default function RiskDashboardPage() {
 	if (error) {
 		return (
 			<div>
-				<ConsolePageHeader
+				<AppPageHeader
 					title="风险仪表盘"
 					description="租户风险全景视图 — 今日事件 / 评分分布 / 高风险用户 Top 5"
 				/>
@@ -141,7 +141,7 @@ export default function RiskDashboardPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title="风险仪表盘"
 				description="租户风险全景视图 — 今日事件 / 评分分布 / 高风险用户 Top 5"
 			/>

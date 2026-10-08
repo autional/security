@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { DataTable, Drawer } from '@autional/ui/antd';
 import type { DataTableColumns } from '@autional/ui/antd';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { Card, Select, Tag, Button, Spin, Empty, Space, Row, Col, Statistic, Descriptions, Modal, Tooltip } from 'antd';
 import {
 	AlertTriangle,
@@ -254,7 +254,7 @@ export default function AlertsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={<><Bell size="1em" className="mr-2" /> {t('alerts.title')}</>}
 				actions={
 					<>

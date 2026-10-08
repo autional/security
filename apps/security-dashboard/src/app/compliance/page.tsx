@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DataTable } from '@autional/ui/antd';
 import type { DataTableColumns } from '@autional/ui/antd';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { Card, Tag, Spin, Empty, Progress, Row, Col, Statistic, Tabs, Badge } from 'antd';
 import {
 	AlertCircle,
@@ -383,7 +383,7 @@ export default function CompliancePage() {
 
 	return (
 		<div>
-			<ConsolePageHeader title={t('compliance.title')} />
+			<AppPageHeader title={t('compliance.title')} />
 
 			<Spin spinning={tabLoadingMap[activeTab] || false}>
 				<Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />

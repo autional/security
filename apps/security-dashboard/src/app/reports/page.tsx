@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { DataTable } from '@autional/ui/antd';
-import { ConsolePageHeader } from '@autional/ui';
+import { AppPageHeader } from '@autional/ui';
 import { Card, Select, Button, Spin, Empty, Tag, Row, Col, Statistic, List, Space, Progress } from 'antd';
 import {
 	AlertTriangle,
@@ -38,7 +38,7 @@ export default function ReportsPage() {
 
 	return (
 		<div>
-			<ConsolePageHeader
+			<AppPageHeader
 				title={t('reports.title')}
 				actions={
 					<>
