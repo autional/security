@@ -7,15 +7,11 @@ import {
 	AlertTriangle,
 	BadgeCheck,
 	CheckCircle2,
-	Cloud,
 	FileSearch,
 	FileText,
 	HelpCircle,
 	Network,
-	Plug,
-	Radar,
 	XCircle,
-	Zap,
 } from 'lucide-react';
 import {
 	LineChart,
@@ -93,15 +89,6 @@ function buildEventsFromData(
 				userId: log.userId || log.user_id,
 			});
 		}
-	}
-	if (events.length === 0) {
-		events.push({
-			id: 'init-1',
-			time: Date.now(),
-			title: t('overview.systemReady'),
-			description: t('overview.systemMonitoringDesc'),
-			type: 'audit',
-		});
 	}
 	return events;
 }
@@ -512,36 +499,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} lg={8}>
 						<Card title={t('overview.alertChannelStatus')} className="h-full">
-							<div className="space-y-3">
-								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
-									<div className="flex items-center gap-2">
-										<Cloud size="1em" className="text-info" />
-										<span className="text-sm">{t('overview.emailAlert')}</span>
-									</div>
-									<Tag color="success">{t('overview.healthy')}</Tag>
-								</div>
-								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
-									<div className="flex items-center gap-2">
-										<Zap size="1em" className="text-warning" />
-										<span className="text-sm">{t('overview.smsAlert')}</span>
-									</div>
-									<Tag color="success">{t('overview.healthy')}</Tag>
-								</div>
-								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
-									<div className="flex items-center gap-2">
-										<Plug size="1em" className="text-chart-7" />
-										<span className="text-sm">{t('overview.siemPush')}</span>
-									</div>
-									<Tag color="default">{t('overview.notConfigured')}</Tag>
-								</div>
-								<div className="flex items-center justify-between p-2 rounded-xs border border-neutral-200">
-									<div className="flex items-center gap-2">
-										<Radar size="1em" className="text-info" />
-										<span className="text-sm">{t('overview.webhook')}</span>
-									</div>
-									<Tag color="default">{t('overview.notConfigured')}</Tag>
-								</div>
-							</div>
+							<Alert type="info" showIcon message={t('overview.configHint')} />
 						</Card>
 					</Col>
 				</Row>
@@ -549,6 +507,9 @@ export default function OverviewPage() {
 				<Row gutter={[16, 16]} className="mt-4">
 					<Col xs={24} lg={8}>
 						<Card title={t('overview.recentEvents')} className="h-full">
+							{events.length === 0 ? (
+								<Empty description={t('overview.noDataTitle')} />
+							) : (
 							<Timeline
 								mode="left"
 								items={events.map((evt) => {
@@ -586,6 +547,7 @@ export default function OverviewPage() {
 									};
 								})}
 							/>
+							)}
 						</Card>
 					</Col>
 					<Col xs={24} lg={8}>
