@@ -14,6 +14,7 @@ import {
 	BrandingInitializer,
 } from '@autional/shared';
 import { ErrorBoundary } from '@autional/ui';
+import { useTranslation } from 'react-i18next';
 import ScrollToTop from './components/ScrollToTop';
 import { Spin } from 'antd';
 
@@ -72,9 +73,10 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 }
 
 function PageLoader() {
+	const { t } = useTranslation();
 	return (
 		<div className="flex items-center justify-center min-h-[60vh]">
-			<Spin size="large" tip="加载中..." />
+			<Spin size="large" tip={t('common.loading')} />
 		</div>
 	);
 }

@@ -499,7 +499,7 @@ export default function OverviewPage() {
 					</Col>
 					<Col xs={24} lg={8}>
 						<Card title={t('overview.alertChannelStatus')} className="h-full">
-							<Alert type="info" showIcon message={t('overview.configHint')} />
+							<Alert variant="info">{t('overview.configHint')}</Alert>
 						</Card>
 					</Col>
 				</Row>

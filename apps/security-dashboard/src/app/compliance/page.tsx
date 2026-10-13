@@ -320,9 +320,9 @@ export default function CompliancePage() {
 								if (!v) return '-';
 								const norm = v.trim().toLowerCase();
 								const meta =
-									norm === 'passed' || norm === 'pass' || v === '通过'
+									norm === 'passed' || norm === 'pass' || v === '通过' // i18n-exempt: 服务端域值归一匹配（历史行含中文值），非显示文案
 										? { label: t('status.passed'), color: 'success' as const }
-										: norm === 'failed' || norm === 'fail' || v === '失败'
+										: norm === 'failed' || norm === 'fail' || v === '失败' // i18n-exempt: 服务端域值归一匹配（历史行含中文值），非显示文案
 											? { label: t('status.failed'), color: 'error' as const }
 											: { label: v, color: 'default' as const };
 								return <Tag color={meta.color}>{meta.label}</Tag>;
