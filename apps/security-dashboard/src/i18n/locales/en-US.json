@@ -99,9 +99,7 @@
     "siemPush": "SIEM Push",
     "webhook": "Webhook",
     "healthy": "Healthy",
-    "notConfigured": "Not Configured",
-    "systemReady": "System Ready",
-    "systemMonitoringDesc": "Security monitoring system is running, waiting for event data..."
+    "notConfigured": "Not Configured"
   },
   "anomalyTypes": {
     "brute_force": "Brute Force",
@@ -975,8 +973,6 @@
   "overview.webhook": "Webhook",
   "overview.healthy": "Healthy",
   "overview.notConfigured": "Not Configured",
-  "overview.systemReady": "System Ready",
-  "overview.systemMonitoringDesc": "Security monitoring system is running, waiting for event data...",
   "anomalyTypes.brute_force": "Brute Force",
   "anomalyTypes.impossible_travel": "Impossible Travel",
   "anomalyTypes.unusual_location": "Unusual Location",

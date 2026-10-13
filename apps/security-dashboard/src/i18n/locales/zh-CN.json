@@ -99,9 +99,7 @@
     "siemPush": "SIEM 推送",
     "webhook": "Webhook",
     "healthy": "正常",
-    "notConfigured": "未配置",
-    "systemReady": "系统就绪",
-    "systemMonitoringDesc": "安全监控系统正在运行，等待事件数据..."
+    "notConfigured": "未配置"
   },
   "anomalyTypes": {
     "brute_force": "暴力破解",
@@ -975,8 +973,6 @@
   "overview.webhook": "Webhook",
   "overview.healthy": "正常",
   "overview.notConfigured": "未配置",
-  "overview.systemReady": "系统就绪",
-  "overview.systemMonitoringDesc": "安全监控系统正在运行，等待事件数据...",
   "anomalyTypes.brute_force": "暴力破解",
   "anomalyTypes.impossible_travel": "不可能旅行",
   "anomalyTypes.unusual_location": "异常位置",
