@@ -1,6 +1,6 @@
 # Security Dashboard 功能差距分析报告
 
-> 基于 `service-flow-test-writer` + `authms-api-e2e-flow` Skill 方法论，从用户角色、旅程建模、状态机完备性三个维度分析前端功能覆盖度。
+> 基于 `service-flow-test-writer` + `api-e2e-flow` Skill 方法论，从用户角色、旅程建模、状态机完备性三个维度分析前端功能覆盖度。
 
 ---
 
@@ -392,7 +392,7 @@ getSecurityReport, getComplianceReport
 
 ## 六、安全边界测试缺口
 
-根据 `authms-api-e2e-flow` 安全边界检查清单，前端应关注但当前未覆盖的测试场景：
+根据 `api-e2e-flow` 安全边界检查清单，前端应关注但当前未覆盖的测试场景：
 
 | 检查项 | 前端应有行为 | 当前状态 |
 |--------|-------------|----------|
