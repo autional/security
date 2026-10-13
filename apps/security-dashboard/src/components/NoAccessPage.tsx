@@ -33,10 +33,7 @@ export default function NoAccessPage({ showHome = false }: NoAccessPageProps) {
 				variant="warning"
 				className="w-full max-w-md"
 				title={<span className="text-4xl font-bold">403</span>}
-				description={t(
-					'roleGuard.noAccess',
-					'抱歉，您当前账号的角色无权访问此页面。如需访问，请切换具备相应权限的账号。',
-				)}
+				description={t('roleGuard.noAccess')}
 				action={[
 					<Button type="primary" key="switch-account" onClick={logout}>
 						{t('roleGuard.switchAccount', '切换账号')}

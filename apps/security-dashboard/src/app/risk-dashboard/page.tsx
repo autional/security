@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DataTable } from '@autional/ui/antd';
 import { Card, Row, Col, Statistic, Tag, Spin, Tooltip, Button } from 'antd';
 import { AlertTriangle, ShieldAlert, ShieldCheck, TrendingUp } from 'lucide-react';
@@ -54,43 +55,44 @@ const levelColors: Record<string, string> = {
 // S-30：分数体系为小数制，保留最多 2 位小数——原 Math.round 致 0.35→0 的「高分低均」误读
 const fmtScore = (s: number | null | undefined) => Number(Number(s ?? 0).toFixed(2));
 
-const eventColumns = [
-	{
-		title: '事件类型',
-		dataIndex: 'eventType',
-		key: 'eventType',
-		render: (t: string) => <Tag>{t}</Tag>,
-	},
-	{ title: '次数', dataIndex: 'count', key: 'count' },
-];
-
-const userColumns = [
-	{
-		title: '用户',
-		dataIndex: 'userId',
-		key: 'userId',
-		// S-32：裸 ULID 截断不可识别 → 用户名/邮箱 + 画像入口（查不到回落截断 ULID）
-		render: (id: string) => <UserIdentity userId={id} />,
-	},
-	{
-		title: '最高分',
-		dataIndex: 'maxScore',
-		key: 'maxScore',
-		render: (s: number) => <Tag color={s >= 80 ? 'red' : 'orange'}>{fmtScore(s)}</Tag>,
-	},
-	{
-		title: '平均分',
-		dataIndex: 'avgScore',
-		key: 'avgScore',
-		render: (s: number) => fmtScore(s),
-	},
-	{ title: '事件数', dataIndex: 'count', key: 'count' },
-];
-
 export default function RiskDashboardPage() {
+	const { t } = useTranslation();
 	const [data, setData] = useState<DashboardData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const eventColumns = [
+		{
+			title: t('risk.colEventType'),
+			dataIndex: 'eventType',
+			key: 'eventType',
+			render: (v: string) => <Tag>{v}</Tag>,
+		},
+		{ title: t('risk.colCount'), dataIndex: 'count', key: 'count' },
+	];
+
+	const userColumns = [
+		{
+			title: t('risk.colUser'),
+			dataIndex: 'userId',
+			key: 'userId',
+			// S-32：裸 ULID 截断不可识别 → 用户名/邮箱 + 画像入口（查不到回落截断 ULID）
+			render: (id: string) => <UserIdentity userId={id} />,
+		},
+		{
+			title: t('risk.colMaxScore'),
+			dataIndex: 'maxScore',
+			key: 'maxScore',
+			render: (s: number) => <Tag color={s >= 80 ? 'red' : 'orange'}>{fmtScore(s)}</Tag>,
+		},
+		{
+			title: t('risk.colAvgScore'),
+			dataIndex: 'avgScore',
+			key: 'avgScore',
+			render: (s: number) => fmtScore(s),
+		},
+		{ title: t('risk.colEventCount'), dataIndex: 'count', key: 'count' },
+	];
 
 	// S-28：失败静默 catch 会把「接口失败」渲染成与「今天没事件」相同的全 0 界面——
 	// catch 分支置错误态（含诊断信息），空值不再与 0 合并渲染
@@ -112,16 +114,13 @@ export default function RiskDashboardPage() {
 	if (error) {
 		return (
 			<div>
-				<AppPageHeader
-					title="风险仪表盘"
-					description="租户风险全景视图 — 今日事件 / 评分分布 / 高风险用户 Top 5"
-				/>
+				<AppPageHeader title={t('risk.title')} description={t('risk.description')} />
 				<Alert
 					variant="danger"
-					title="风险数据加载失败"
+					title={t('risk.loadFailed')}
 					action={
 						<Button size="small" onClick={load}>
-							重试
+							{t('common.retry')}
 						</Button>
 					}
 				>
@@ -141,21 +140,18 @@ export default function RiskDashboardPage() {
 
 	return (
 		<div>
-			<AppPageHeader
-				title="风险仪表盘"
-				description="租户风险全景视图 — 今日事件 / 评分分布 / 高风险用户 Top 5"
-			/>
+			<AppPageHeader title={t('risk.title')} description={t('risk.description')} />
 
 			<Row gutter={16} style={{ marginBottom: 24 }}>
 				<Col span={6}>
 					<Card>
-						<Statistic title="今日事件" value={data?.todayTotal || 0} prefix={<ShieldAlert size="1em" />} />
+						<Statistic title={t('risk.todayEvents')} value={data?.todayTotal || 0} prefix={<ShieldAlert size="1em" />} />
 					</Card>
 				</Col>
 				<Col span={6}>
 					<Card>
 						<Statistic
-							title="严重事件（今日）"
+							title={t('risk.criticalToday')}
 							value={criticalCount}
 							valueStyle={{ color: 'var(--color-danger-text)' }}
 							prefix={<AlertTriangle size="1em" />}
@@ -165,7 +161,7 @@ export default function RiskDashboardPage() {
 				<Col span={6}>
 					<Card>
 						<Statistic
-							title="高风险事件（今日）"
+							title={t('risk.highToday')}
 							value={highCount}
 							valueStyle={{ color: '#fa8c16' }}
 							prefix={<TrendingUp size="1em" />}
@@ -175,7 +171,7 @@ export default function RiskDashboardPage() {
 				<Col span={6}>
 					<Card>
 						<Statistic
-							title="评分档位（今日）"
+							title={t('risk.scoreRangesToday')}
 							value={data?.scoreRanges.length || 0}
 							prefix={<ShieldCheck size="1em" />}
 						/>
@@ -185,7 +181,7 @@ export default function RiskDashboardPage() {
 
 			<Row gutter={16}>
 				<Col span={12}>
-					<Card title="评分分布（今日）" style={{ marginBottom: 16 }}>
+					<Card title={t('risk.scoreDistribution')} style={{ marginBottom: 16 }}>
 						{(data?.scoreRanges || []).map((r) => (
 							<div key={r.range} style={{ marginBottom: 8 }}>
 								<Tag color={levelColors[r.range] || 'default'}>{r.range}</Tag>
@@ -195,7 +191,7 @@ export default function RiskDashboardPage() {
 					</Card>
 				</Col>
 				<Col span={12}>
-					<Card title="高频事件类型（近 7 天）" style={{ marginBottom: 16 }}>
+					<Card title={t('risk.topEventTypes')} style={{ marginBottom: 16 }}>
 						<DataTable
 							dataSource={data?.topEventTypes || []}
 							columns={eventColumns}
@@ -207,18 +203,18 @@ export default function RiskDashboardPage() {
 				</Col>
 			</Row>
 
-			<Card title="高风险用户 Top 5 (近 7 天)" style={{ marginBottom: 16 }}>
+			<Card title={t('risk.topRiskUsers')} style={{ marginBottom: 16 }}>
 				<DataTable
 					dataSource={data?.topRiskUsers || []}
 					columns={userColumns}
 					rowKey="userId"
 					pagination={false}
 					size="small"
-					locale={{ emptyText: '近 7 天无高风险用户（最高分 ≥ 60）' }}
+					locale={{ emptyText: t('risk.noRiskUsers') }}
 				/>
 			</Card>
 
-			<Card title="7 日趋势">
+			<Card title={t('risk.trend7d')}>
 				<div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 120 }}>
 					{(data?.dayCounts || []).map((d) => {
 						const height = Math.max((d.count / maxCount) * 100, 4);
@@ -226,7 +222,7 @@ export default function RiskDashboardPage() {
 						const isToday = bucketDay === todayKey;
 						return (
 							<div key={d.date} style={{ flex: 1, textAlign: 'center' }}>
-								<Tooltip title={`${bucketDay} · ${d.count} 起`}>
+								<Tooltip title={t('risk.trendTooltip', { date: bucketDay, count: d.count })}>
 									<div
 										style={{
 											height: `${height}px`,
@@ -240,7 +236,7 @@ export default function RiskDashboardPage() {
 							</div>
 						);
 					})}
-					{!dayCounts.length && <span>暂无数据</span>}
+					{!dayCounts.length && <span>{t('common.noData')}</span>}
 				</div>
 			</Card>
 		</div>
