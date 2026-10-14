@@ -512,7 +512,6 @@ export function useAlerts(params?: Record<string, unknown>) {
 	return useQuery({
 		queryKey: ['alerts', params],
 		queryFn: () => getAlerts(params),
-		retry: 1,
 	});
 }
 
@@ -552,7 +551,6 @@ export function useAgents(params?: Record<string, unknown>) {
 	return useQuery({
 		queryKey: ['nhi', 'agents', params],
 		queryFn: () => getAdminAgents(params as any),
-		retry: 1,
 	});
 }
 
@@ -560,7 +558,6 @@ export function useRobots(params?: Record<string, unknown>) {
 	return useQuery({
 		queryKey: ['nhi', 'robots', params],
 		queryFn: () => getAdminRobots(params),
-		retry: 1,
 	});
 }
 
@@ -568,7 +565,6 @@ export function useIots(params?: Record<string, unknown>) {
 	return useQuery({
 		queryKey: ['nhi', 'iots', params],
 		queryFn: () => getAdminIots(params),
-		retry: 1,
 	});
 }
 
@@ -578,7 +574,6 @@ export function useAgentById(id: string | null) {
 		queryKey: ['nhi', 'agent', id],
 		queryFn: () => getAgentById(id!),
 		enabled: !!id,
-		retry: 1,
 	});
 }
 
@@ -587,7 +582,6 @@ export function useRobotById(id: string | null) {
 		queryKey: ['nhi', 'robot', id],
 		queryFn: () => getRobotById(id!),
 		enabled: !!id,
-		retry: 1,
 	});
 }
 
@@ -596,7 +590,6 @@ export function useDeviceById(id: string | null) {
 		queryKey: ['nhi', 'device', id],
 		queryFn: () => getDeviceById(id!),
 		enabled: !!id,
-		retry: 1,
 	});
 }
 
