@@ -11,7 +11,7 @@ import { useTenantSlug } from '@autional/shared';
 import { getSecurityUserTimeline } from '@/lib/api';
 import { formatTimelineTime, normalizeTimestamp } from '@/lib/format';
 import { anomalyTypeLabel, severityColor, severityLabel } from '@/lib/enums';
-import { eventActionLabel, eventMessage, eventStyle } from '@/lib/timeline';
+import { eventActionLabel, eventMessage, eventStyle, hasMappedActionLabel } from '@/lib/timeline';
 import { UserIdentity } from '@/components/UserIdentity';
 import { useTranslation } from 'react-i18next';
 
@@ -129,6 +129,7 @@ export default function UserSecurityTimelinePage() {
 								const message = evt.message || evt.description || evt.detail || '';
 								const time = evt.timestamp || evt.createdAt || evt.time || '';
 								const { Icon, color } = eventStyle(action);
+								const actionMapped = hasMappedActionLabel(t, action);
 								return {
 									key: evt.id || String(i),
 									color,
@@ -136,7 +137,12 @@ export default function UserSecurityTimelinePage() {
 									label: <span className="text-xs text-neutral-600">{formatTimelineTime(time)}</span>,
 									children: (
 										<div>
-											<div className="text-sm font-medium">{eventActionLabel(t, action)}</div>
+											<div
+												className="text-sm font-medium"
+												title={!actionMapped && action ? String(action) : undefined}
+											>
+												{eventActionLabel(t, action)}
+											</div>
 											{message && (
 												<div className="text-xs text-neutral-600">{eventMessage(t, message)}</div>
 											)}

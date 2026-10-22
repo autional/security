@@ -71,33 +71,35 @@ describe('SessionsPage', () => {
 		mockLoaded([
 			{
 				id: 's1',
-				username: 'alice',
 				userId: 'u1',
-				ipAddress: '10.0.0.1',
-				device: 'Chrome',
-				browser: 'Chrome 120',
-				location: 'Beijing',
-				riskScore: 30,
+				ip: '10.0.0.1',
+				device_type: 'desktop',
+				geoip: 'Beijing, CN',
+				user_agent:
+					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 				createdAt: '2025-01-01T00:00:00Z',
 				lastActiveAt: '2025-01-01T01:00:00Z',
 			},
 		]);
 		render(<SessionsPage />);
 		expect(screen.getByText('会话安全监控')).toBeInTheDocument();
-		expect(screen.getByText('alice')).toBeInTheDocument();
+		// S2-R02：后端 wire 字段（ip/device_type/geoip/user_agent）必须上屏。
+		expect(screen.getByText('10.0.0.1')).toBeInTheDocument();
+		expect(screen.getByText('desktop')).toBeInTheDocument();
+		expect(screen.getByText('Chrome')).toBeInTheDocument();
+		expect(screen.getByText('Beijing, CN')).toBeInTheDocument();
 	});
 
 	it('terminate button exists', () => {
 		mockLoaded([
 			{
 				id: 's1',
-				username: 'alice',
 				userId: 'u1',
-				ipAddress: '10.0.0.1',
-				device: 'Chrome',
-				browser: 'Chrome 120',
-				location: 'Beijing',
-				riskScore: 30,
+				ip: '10.0.0.1',
+				device_type: 'desktop',
+				geoip: 'Beijing, CN',
+				user_agent:
+					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 				createdAt: '2025-01-01T00:00:00Z',
 				lastActiveAt: '2025-01-01T01:00:00Z',
 			},

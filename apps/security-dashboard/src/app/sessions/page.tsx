@@ -19,19 +19,7 @@ import { message } from '@/lib/antd-app';
 import { useTranslation } from 'react-i18next';
 import { Can } from '@/components/Can';
 import { PageScopeHint } from '@/components/PageScopeHint';
-
-interface SessionItem {
-	id: string;
-	userId: string;
-	username: string;
-	ipAddress: string;
-	device: string;
-	browser: string;
-	location: string;
-	riskScore: number;
-	createdAt: string;
-	lastActiveAt: string;
-}
+import { mapSessionRow, type SessionRow } from '@/lib/session-mapper';
 
 export default function SessionsPage() {
 	const { t } = useTranslation();
@@ -43,11 +31,16 @@ export default function SessionsPage() {
 	const { data: activeCountData, isError: activeError, refetch: refetchActive } = useActiveSessions();
 	const terminateMutation = useTerminateSession();
 
-	const items = (data as any)?.items || [];
+	const rawItems: Record<string, unknown>[] = Array.isArray((data as any)?.items)
+		? ((data as any).items as Record<string, unknown>[])
+		: [];
+	const items: SessionRow[] = rawItems.map(mapSessionRow);
 	const total = (data as any)?.total || (data as any)?.pagination?.total || items.length;
 	const activeCount = (activeCountData as any)?.count || 0;
 	// S-46：查询失败时不得渲染假 0（与「真为 0」不可分）——统计卡对失败源显示 '--'
-	const highRiskCount = items.filter((s: any) => s.riskScore >= 80).length;
+	const hasRiskData = items.some((s) => typeof s.riskScore === 'number');
+	const riskUnavailable = items.length > 0 && !hasRiskData;
+	const highRiskCount = items.filter((s) => typeof s.riskScore === 'number' && s.riskScore >= 80).length;
 	const queryFailed = sessionsError || activeError;
 
 	const handleTerminate = async (id: string) => {
@@ -76,19 +69,19 @@ export default function SessionsPage() {
 		return 'green';
 	};
 
-	const columns: DataTableColumns<SessionItem> = [
+	const columns: DataTableColumns<SessionRow> = [
 		{ title: t('sessions.columnId'), dataIndex: 'id', width: 200 },
-		{ title: t('sessions.columnUser'), dataIndex: 'username', width: 140 },
-		{ title: t('sessions.columnUserId'), dataIndex: 'userId', width: 140 },
-		{ title: t('sessions.columnIp'), dataIndex: 'ipAddress', width: 140 },
-		{ title: t('sessions.columnDevice'), dataIndex: 'device', width: 140 },
-		{ title: t('sessions.columnBrowser'), dataIndex: 'browser', width: 140 },
-		{ title: t('sessions.columnLocation'), dataIndex: 'location', width: 140 },
+		{ title: t('sessions.columnUser'), dataIndex: 'username', width: 140, render: (v: string) => v || '-' },
+		{ title: t('sessions.columnUserId'), dataIndex: 'userId', width: 140, render: (v: string) => v || '-' },
+		{ title: t('sessions.columnIp'), dataIndex: 'ipAddress', width: 140, render: (v: string) => v || '-' },
+		{ title: t('sessions.columnDevice'), dataIndex: 'device', width: 140, render: (v: string) => v || '-' },
+		{ title: t('sessions.columnBrowser'), dataIndex: 'browser', width: 140, render: (v: string) => v || '-' },
+		{ title: t('sessions.columnLocation'), dataIndex: 'location', width: 140, render: (v: string) => v || '-' },
 		{
 			title: t('sessions.columnRiskScore'),
 			dataIndex: 'riskScore',
 			width: 110,
-			render: (v: number) => <Tag color={riskColor(v)}>{v}</Tag>,
+			render: (v: number | null) => (typeof v === 'number' ? <Tag color={riskColor(v)}>{v}</Tag> : '-'),
 		},
 		{
 			title: t('sessions.columnCreatedAt'),
@@ -106,7 +99,7 @@ export default function SessionsPage() {
 			title: t('sessions.columnActions'),
 			width: 120,
 			fixed: 'right',
-			render: (_: any, record: SessionItem) => (
+			render: (_: any, record: SessionRow) => (
 				<Can denyAuditor>
 					<Button
 						size="small"
@@ -173,7 +166,7 @@ export default function SessionsPage() {
 					<Card>
 						<Statistic
 							title={<span>{t('sessions.highRiskSessions')}<PageScopeHint /></span>}
-							value={sessionsError ? '--' : highRiskCount}
+							value={sessionsError || riskUnavailable ? '--' : highRiskCount}
 							prefix={<Ban size="1em" className="text-danger" />}
 						/>
 					</Card>

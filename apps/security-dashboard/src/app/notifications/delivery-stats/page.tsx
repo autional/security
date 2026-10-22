@@ -127,6 +127,9 @@ export default function DeliveryStatsPage() {
 	const readCount = readReport?.readCount ?? null;
 	const readRateVal = readReport?.readRate ?? null;
 	const unreadCount = readReport?.unreadCount ?? null;
+	// S2-R03：零发送时 readRate 恒 0，不代表「阅读差」——不判定待关注，显式提示暂无发送。
+	const zeroSent = typeof notifTotal === 'number' && notifTotal === 0;
+	const readRateAvailable = readRateVal != null && !zeroSent;
 
 	const channelLabels: Record<string, string> = {
 		email: t('common.email'),
@@ -204,9 +207,9 @@ export default function DeliveryStatsPage() {
 								<CheckCircle2 size="1em" className="text-info" />
 							</div>
 							<div className="text-2xl font-semibold text-neutral-900 dark:text-white">
-								{readRateVal != null ? `${(Number(readRateVal) * 100).toFixed(1)}%` : '--'}
+								{readRateAvailable ? `${(Number(readRateVal) * 100).toFixed(1)}%` : '--'}
 							</div>
-							{readRateVal != null ? (
+							{readRateAvailable ? (
 								<div className="mt-2">
 									<Tag
 										color={
@@ -227,6 +230,10 @@ export default function DeliveryStatsPage() {
 							) : errors.read ? (
 								<div className="text-xs text-danger mt-2">
 									{t('common.loadFailed', 'Load failed')}
+								</div>
+							) : zeroSent && !errors.notif ? (
+								<div className="text-xs text-neutral-600 mt-2">
+									{t('notification.noSent', 'No notifications sent')}
 								</div>
 							) : null}
 						</Card>

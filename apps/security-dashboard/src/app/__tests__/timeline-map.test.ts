@@ -9,7 +9,13 @@ import {
 	Smartphone,
 	Users,
 } from 'lucide-react';
-import { eventActionLabel, eventMessage, eventStyle, normalizeAction } from '@/lib/timeline';
+import {
+	eventActionLabel,
+	eventMessage,
+	eventStyle,
+	hasMappedActionLabel,
+	normalizeAction,
+} from '@/lib/timeline';
 
 // S-72 回归：真实 action 值域（大小写/分隔符混杂）下的归一、图标/颜色、文案与消息映射
 const dict: Record<string, string> = {
@@ -19,6 +25,7 @@ const dict: Record<string, string> = {
 	'usersTimeline.actSessionCreated': '会话创建',
 	'usersTimeline.actDeviceFingerprint': '设备指纹登记',
 	'usersTimeline.actAssignRoles': '角色分配',
+	'usersTimeline.actOther': '其他操作',
 	'usersTimeline.msgSecurityEvent': '安全事件：{{action}}',
 	'usersTimeline.msgSecurityOperation': '安全操作：{{action}}，结果：{{result}}',
 	'usersTimeline.msgSuccess': '成功',
@@ -57,8 +64,10 @@ describe('eventActionLabel（S-72 动作名文案）', () => {
 		expect(eventActionLabel(t, 'user.assign_roles')).toBe('角色分配');
 	});
 
-	it('未知值回落原文 prettify（不隐藏数据）', () => {
-		expect(eventActionLabel(t, 'weird.action_x')).toBe('weird action x');
+	it('未知值本地化兜底，原文留给 tooltip（S2-R04）', () => {
+		expect(eventActionLabel(t, 'weird.action_x')).toBe('其他操作');
+		expect(hasMappedActionLabel(t, 'weird.action_x')).toBe(false);
+		expect(hasMappedActionLabel(t, 'session.created')).toBe(true);
 		expect(eventActionLabel(t, '')).toBe('-');
 	});
 });

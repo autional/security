@@ -51,14 +51,28 @@ const ACTION_LABEL_MAP: Record<string, string> = {
 	user_assign_roles: 'usersTimeline.actAssignRoles',
 };
 
+const UNKNOWN_ACTION_KEY = 'usersTimeline.actOther';
+
+function knownActionLabel(t: TFn, norm: string): string | null {
+	const key = ACTION_LABEL_MAP[norm];
+	if (!key) return null;
+	const label = t(key);
+	return label && label !== key ? label : null;
+}
+
+export function hasMappedActionLabel(t: TFn, action?: string | null): boolean {
+	const norm = normalizeAction(action);
+	return norm !== '' && knownActionLabel(t, norm) !== null;
+}
+
 export function eventActionLabel(t: TFn, action?: string | null): string {
 	const norm = normalizeAction(action);
 	if (!norm) return '-';
-	const key = ACTION_LABEL_MAP[norm];
-	if (key) {
-		const label = t(key);
-		if (label && label !== key) return label;
-	}
+	const known = knownActionLabel(t, norm);
+	if (known) return known;
+	// S2-R04：未映射动作不再回落英文原文；统一「其他操作」，原文由页面 tooltip 呈现。
+	const fallback = t(UNKNOWN_ACTION_KEY);
+	if (fallback && fallback !== UNKNOWN_ACTION_KEY) return fallback;
 	return (action || '').replace(/[._]/g, ' ').trim();
 }
 

@@ -18,7 +18,7 @@ import {
 	Shield,
 } from 'lucide-react';
 import { Layout, Menu, Button, Typography, Breadcrumb } from 'antd';
-import { useAuth, useLogout, usePortalCatalog, useTenantSlug } from '@autional/shared';
+import { useAuth, useLogout, usePermission, usePortalCatalog, useTenantSlug } from '@autional/shared';
 import { AppShell, LanguageSwitcher, PortalSwitcher, ThemeToggle, UserMenu } from '@autional/ui';
 import SSEEventStream from './SSEEventStream';
 import { message, notification } from '@/lib/antd-app';
@@ -38,8 +38,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 	// basename 恒 "/" 后 pathname 含租户 slug（如 /acme-corp/audit-logs），
 	// slug 用于导航拼接 + 内部路径匹配（菜单高亮/面包屑）剥离前缀。
 	const slug = useTenantSlug();
-	// 管理面平面（audiences [admin, platform]）：安全控制台走 admin 受众端点
-	const { portals } = usePortalCatalog({ tenantId: currentTenantId, slug, audience: 'admin' });
+	// 管理面平面（audiences [admin, platform]）：安全控制台走 admin 受众端点。
+	// 后端该端点要求 tenant:admin；security_admin 无此权限，提前门控避免每页 403。
+	const { can } = usePermission();
+	const { portals } = usePortalCatalog({
+		tenantId: currentTenantId,
+		slug,
+		audience: 'admin',
+		enabled: can('tenant:admin'),
+	});
 	const internalPath = slug ? pathname.replace(new RegExp(`^/${slug}`), '') || '/' : pathname;
 
 	// S-74：会话过期降级标记 ∈ 已重新认证 → 恢复告知（toast + 关闭降级提示）。
