@@ -19,6 +19,7 @@ import {
 import dayjs from 'dayjs';
 import {
 	useComplianceDashboard,
+	useComplianceProfile,
 	useComplianceSelfScore,
 	useDSARsTab,
 	useRetentionPoliciesTab,
@@ -48,10 +49,29 @@ export default function CompliancePage() {
 	} = useComplianceDashboard();
 	const { data: scoreData, isLoading: scoreLoading, isError: scoreError } = useComplianceSelfScore();
 	const overallScore: number | null = scoreData?.overallScore ?? null;
-	const { data: dsars, isLoading: dsarLoading } = useDSARsTab();
+
+	// 框架门禁：profile.enabledFrameworks 是唯一权威（门禁键词表）。
+	// 加载中：页签先全显但不发数据请求；404/加载失败：按“未配置”处理（后端默认全部启用）。
+	const {
+		data: profile,
+		isLoading: profileLoading,
+		isError: profileError,
+	} = useComplianceProfile();
+	const frameworkKeys = profile?.enabledFrameworks ?? [];
+	const tabVisible = (keys: string[]) =>
+		profileLoading || profileError || keys.some((k) => frameworkKeys.includes(k));
+	const tabQueryEnabled = (keys: string[]) =>
+		!profileLoading && (profileError || keys.some((k) => frameworkKeys.includes(k)));
+	const gdprTabVisible = tabVisible(['gdpr']);
+	const isoTabVisible = tabVisible(['iso27001', 'iso27001_2022']);
+	const soxTabVisible = tabVisible(['sox']);
+
+	const { data: dsars, isLoading: dsarLoading } = useDSARsTab(tabQueryEnabled(['gdpr']));
 	const { data: retentionPolicies, isLoading: retentionLoading } = useRetentionPoliciesTab();
-	const { data: isoControls, isLoading: isoLoading } = useISOControlsTab();
-	const { data: soxControls, isLoading: soxLoading } = useSOXControlsTab();
+	const { data: isoControls, isLoading: isoLoading } = useISOControlsTab(
+		tabQueryEnabled(['iso27001', 'iso27001_2022']),
+	);
+	const { data: soxControls, isLoading: soxLoading } = useSOXControlsTab(tabQueryEnabled(['sox']));
 	const { data: penTests, isLoading: penTestLoading } = usePenTestReportsTab();
 
 	const tabLoadingMap: Record<string, boolean> = {
@@ -381,12 +401,27 @@ export default function CompliancePage() {
 		},
 	];
 
+	// 未启用的框架不出现页签；若当前激活页签被隐藏则回落到概览。
+	const visibleTabItems = tabItems.filter((item) => {
+		switch (item.key) {
+			case 'dsar':
+				return gdprTabVisible;
+			case 'iso':
+				return isoTabVisible;
+			case 'sox':
+				return soxTabVisible;
+			default:
+				return true;
+		}
+	});
+	const activeTabKey = visibleTabItems.some((item) => item.key === activeTab) ? activeTab : 'overview';
+
 	return (
 		<div>
 			<AppPageHeader title={t('compliance.title')} />
 
-			<Spin spinning={tabLoadingMap[activeTab] || false}>
-				<Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
+			<Spin spinning={tabLoadingMap[activeTabKey] || false}>
+				<Tabs activeKey={activeTabKey} onChange={setActiveTab} items={visibleTabItems} />
 			</Spin>
 		</div>
 	);

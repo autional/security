@@ -24,6 +24,7 @@ import {
 	getExportJobs,
 	downloadExport,
 	getComplianceSelfScore,
+	getComplianceProfile,
 	getAdminComplianceStatusRaw,
 	getRetentionPolicies,
 	getISOControls,
@@ -333,7 +334,22 @@ export function useComplianceSelfScore() {
 	});
 }
 
-export function useDSARsTab() {
+/**
+ * 合规配置（enabledFrameworks = 门禁键）。GET /compliance/profile 不挂框架门禁，
+ * 用于页面在发请求前隐藏未启用框架的页签。404 = 租户未配置 → 后端按全部启用处理。
+ */
+export function useComplianceProfile() {
+	return useQuery({
+		queryKey: ['compliance', 'profile'],
+		queryFn: async () => {
+			const res = await getComplianceProfile();
+			return (res ?? null) as { enabledFrameworks?: string[] } | null;
+		},
+		staleTime: 300_000,
+	});
+}
+
+export function useDSARsTab(enabled = true) {
 	return useQuery({
 		queryKey: ['compliance', 'dsars'],
 		queryFn: async () => {
@@ -341,6 +357,7 @@ export function useDSARsTab() {
 			return (res as any)?.items || [];
 		},
 		staleTime: 30_000,
+		enabled,
 	});
 }
 
@@ -355,7 +372,7 @@ export function useRetentionPoliciesTab() {
 	});
 }
 
-export function useISOControlsTab() {
+export function useISOControlsTab(enabled = true) {
 	return useQuery({
 		queryKey: ['compliance', 'iso'],
 		queryFn: async () => {
@@ -363,10 +380,11 @@ export function useISOControlsTab() {
 			return (res as any)?.items || [];
 		},
 		staleTime: 30_000,
+		enabled,
 	});
 }
 
-export function useSOXControlsTab() {
+export function useSOXControlsTab(enabled = true) {
 	return useQuery({
 		queryKey: ['compliance', 'sox'],
 		queryFn: async () => {
@@ -374,6 +392,7 @@ export function useSOXControlsTab() {
 			return (res as any)?.items || [];
 		},
 		staleTime: 30_000,
+		enabled,
 	});
 }
 

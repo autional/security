@@ -21,6 +21,7 @@ export const getRelatedAnomalies = Generated.adminAuditAnomaliesRelatedByAnomali
 export const assignAnomaly = Generated.adminAuditAnomaliesAssignByAnomaliesPost;
 export const addAnomalyComment = Generated.adminAuditAnomaliesCommentByAnomaliesPost;
 export const getComplianceStatus = Generated.complianceStatus;
+export const getComplianceProfile = Generated.complianceProfile;
 export const getComplianceSelfScore = Generated.adminComplianceTenantsSelfScore;
 export const getDSARs = Generated.adminComplianceGdprDsar;
 export const getDSARById = Generated.adminComplianceGdprDsarByDsar;
