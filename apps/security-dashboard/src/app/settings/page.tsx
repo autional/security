@@ -483,7 +483,7 @@ function SiemConnectorsTab() {
 						<Input placeholder="main" />
 					</Form.Item>
 					<Form.Item name="apiKey" label={t('settings.connectorApiKey')}>
-						<Input.Password placeholder="tok-xxx" />
+						<Input.Password autoComplete="off" placeholder="tok-xxx" />
 					</Form.Item>
 					<Form.Item
 						name="enabled"
