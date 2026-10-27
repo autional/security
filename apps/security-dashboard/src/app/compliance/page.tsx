@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { DataTable } from '@autional/ui/antd';
 import type { DataTableColumns } from '@autional/ui/antd';
 import { AppPageHeader } from '@autional/ui';
-import { Card, Tag, Spin, Empty, Progress, Row, Col, Statistic, Tabs, Badge } from 'antd';
+import { Alert, Card, Tag, Spin, Empty, Progress, Row, Col, Statistic, Tabs, Badge } from 'antd';
 import {
 	AlertCircle,
 	BadgeCheck,
@@ -28,6 +28,7 @@ import {
 	usePenTestReportsTab,
 } from '@/hooks/use-security-queries';
 import { useTranslation } from 'react-i18next';
+import type { AdminFrameworkAssessmentSnapshot } from '@/lib/api.generated';
 
 interface ComplianceCheckItem {
 	item: string;
@@ -36,6 +37,69 @@ interface ComplianceCheckItem {
 	description?: string;
 	issues?: string[];
 	severity?: string;
+}
+
+/**
+ * 四态词表（后端 assessment-v2）：compliant / non_compliant / not_assessed / evaluation_error。
+ * 未知值一律按 not_assessed 展示：不臆断为通过或失败。
+ */
+const STATE_META: Record<string, { labelKey: string; color: string }> = {
+	compliant: { labelKey: 'compliance.state.compliant', color: 'success' },
+	non_compliant: { labelKey: 'compliance.state.non_compliant', color: 'error' },
+	not_assessed: { labelKey: 'compliance.state.not_assessed', color: 'default' },
+	evaluation_error: { labelKey: 'compliance.state.evaluation_error', color: 'warning' },
+};
+
+function stateMeta(status?: string) {
+	return STATE_META[status ?? ''] ?? STATE_META.not_assessed;
+}
+
+/** 框架评估卡片组（门禁框架 / 独立标准 / 门禁未启用 三组共用）。 */
+function FrameworkAssessmentCards({
+	title,
+	items,
+}: {
+	title: string;
+	items?: AdminFrameworkAssessmentSnapshot[];
+}) {
+	const { t } = useTranslation();
+	if (!items || items.length === 0) return null;
+	return (
+		<Card title={title} className="mt-4">
+			<Row gutter={[16, 16]}>
+				{items.map((item) => {
+					const meta = stateMeta(item.status);
+					const total = item.controlsTotal ?? 0;
+					const assessed = item.controlsAssessed ?? 0;
+					return (
+						<Col
+							key={`${item.framework ?? ''}-${item.standardId ?? item.displayName ?? ''}`}
+							xs={24}
+							sm={12}
+							lg={8}
+						>
+							<Card size="small" className="h-full">
+								<div className="flex items-center justify-between gap-2">
+									<span className="font-medium">
+										{item.displayName || item.framework || item.standardId}
+									</span>
+									<Tag color={meta.color}>{t(meta.labelKey)}</Tag>
+								</div>
+								<div className="mt-2 text-xs text-secondary">
+									{total > 0
+										? t('compliance.frameworkCoverage', { assessed, total })
+										: t('compliance.coverageUnavailable')}
+								</div>
+								{item.evaluationError && (
+									<div className="mt-2 text-xs text-warning">{item.evaluationError}</div>
+								)}
+							</Card>
+						</Col>
+					);
+				})}
+			</Row>
+		</Card>
+	);
 }
 
 export default function CompliancePage() {
@@ -83,6 +147,13 @@ export default function CompliancePage() {
 		pentest: penTestLoading,
 	};
 
+	// 控制表状态：四态走本地词表；历史/未知值原样展示（不臆断为通过或失败）
+	const controlStatusTag = (value?: string) => {
+		if (!value) return '-';
+		const meta = STATE_META[value];
+		return meta ? <Tag color={meta.color}>{t(meta.labelKey)}</Tag> : <Tag>{value}</Tag>;
+	};
+
 	const checkColumns: DataTableColumns<ComplianceCheckItem> = [
 		{ title: t('compliance.columnItem'), dataIndex: 'item' },
 		{
@@ -122,7 +193,7 @@ export default function CompliancePage() {
 			children: compliance ? (
 				<div>
 					<Row gutter={[16, 16]} className="mb-4">
-						<Col xs={24} sm={8}>
+						<Col xs={24} sm={6}>
 							<Card>
 								<Statistic
 									title={t('compliance.complianceScore')}
@@ -149,35 +220,43 @@ export default function CompliancePage() {
 								)}
 							</Card>
 						</Col>
-						<Col xs={24} sm={8}>
+						<Col xs={24} sm={6}>
 							<Card>
-								{/* 后端取值域为 compliant/non_compliant/evaluation_error（dto.go）；
-									未知值按 '--' 渲染而非臆断为失败 */}
+								{/* 四态词表；未知值按"待评估"渲染而非臆断为失败 */}
 								<Statistic
 									title={t('compliance.overallStatus')}
-									value={
-										(compliance as any).overallStatus === 'compliant'
-											? t('status.passed')
-											: (compliance as any).overallStatus === 'evaluation_error'
-												? t('status.warning')
-												: (compliance as any).overallStatus === 'non_compliant'
-													? t('status.failed')
-													: '--'
-									}
+									value={t(stateMeta(compliance.overallStatus).labelKey)}
 									prefix={
-										(compliance as any).overallStatus === 'compliant' ? (
+										compliance.overallStatus === 'compliant' ? (
 											<CheckCircle2 size="1em" className="text-success" />
-										) : (compliance as any).overallStatus === 'evaluation_error' ? (
+										) : compliance.overallStatus === 'evaluation_error' ? (
 											<AlertCircle size="1em" className="text-warning" />
-										) : (compliance as any).overallStatus === 'non_compliant' ? (
+										) : compliance.overallStatus === 'non_compliant' ? (
 											<XCircle size="1em" className="text-danger" />
 										) : undefined
 									}
 								/>
 							</Card>
 						</Col>
+						<Col xs={24} sm={6}>
+							<Card>
+								<Statistic
+									title={t('compliance.coverageTitle')}
+									value={
+										compliance.assessmentCoverage &&
+										(compliance.assessmentCoverage.total ?? 0) > 0
+											? t('compliance.coverageValue', {
+													assessed: compliance.assessmentCoverage.assessed ?? 0,
+													total: compliance.assessmentCoverage.total ?? 0,
+													percent: Math.round(compliance.assessmentCoverage.percent ?? 0),
+												})
+											: t('compliance.coverageUnavailable')
+									}
+								/>
+							</Card>
+						</Col>
 						{totalChecks > 0 && (
-							<Col xs={24} sm={8}>
+							<Col xs={24} sm={6}>
 								<Card>
 									<Statistic
 										title={t('compliance.checksPassed')}
@@ -189,6 +268,52 @@ export default function CompliancePage() {
 						)}
 					</Row>
 
+					{compliance.evaluationError && (
+						<Alert
+							type="warning"
+							showIcon
+							className="mb-4"
+							message={t('compliance.evaluationErrorTitle')}
+							description={compliance.evaluationError}
+						/>
+					)}
+					{(compliance.unknownStandards?.length ?? 0) > 0 && (
+						<Alert
+							type="warning"
+							showIcon
+							className="mb-4"
+							message={t('compliance.unknownStandards', {
+								list: (compliance.unknownStandards ?? []).join(', '),
+							})}
+						/>
+					)}
+					{(compliance.invalidOverrides?.length ?? 0) > 0 && (
+						<Alert
+							type="warning"
+							showIcon
+							className="mb-4"
+							message={t('compliance.invalidOverrides', {
+								list: (compliance.invalidOverrides ?? [])
+									.map((item) => item.parameter ?? '')
+									.filter(Boolean)
+									.join(', '),
+							})}
+						/>
+					)}
+
+					<FrameworkAssessmentCards
+						title={t('compliance.frameworkCardsTitle')}
+						items={compliance.frameworkAssessments}
+					/>
+					<FrameworkAssessmentCards
+						title={t('compliance.standaloneTitle')}
+						items={compliance.standaloneAssessments}
+					/>
+					<FrameworkAssessmentCards
+						title={t('compliance.gateDisabledTitle')}
+						items={compliance.gateDisabledAssessments}
+					/>
+
 					<Card title={t('compliance.checkDetail')} className="mt-4">
 						<DataTable
 							columns={checkColumns}
@@ -198,6 +323,12 @@ export default function CompliancePage() {
 							locale={{ emptyText: <Empty description={t('compliance.noChecks')} /> }}
 						/>
 					</Card>
+
+					{compliance.assessmentVersion && (
+						<div className="mt-2 text-xs text-secondary">
+							{t('compliance.assessmentVersion', { version: compliance.assessmentVersion })}
+						</div>
+					)}
 
 					{(compliance as any).recommendations &&
 						(compliance as any).recommendations.length > 0 && (
@@ -299,7 +430,7 @@ export default function CompliancePage() {
 						{
 							title: t('anomalies.columnStatus'),
 							dataIndex: 'status',
-							render: (v: string) => <Tag>{v}</Tag>,
+							render: (v: string) => controlStatusTag(v),
 						},
 						{
 							title: t('compliance.columnLastReviewed'),
@@ -330,7 +461,7 @@ export default function CompliancePage() {
 						{
 							title: t('anomalies.columnStatus'),
 							dataIndex: 'status',
-							render: (v: string) => <Tag>{v}</Tag>,
+							render: (v: string) => controlStatusTag(v),
 						},
 						{
 							title: t('compliance.columnTestResult'),

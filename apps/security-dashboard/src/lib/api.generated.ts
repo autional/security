@@ -100,10 +100,51 @@ export const getSecurityUserTimeline = async (
 	const body = await res.json();
 	return camelCaseKeys(body.data);
 };
+/**
+ * 管理端合规状态响应的结构子集（视图模型）：只声明本页读取的字段。
+ * 契约源 = service-compliance swagger（ComplianceStatusResponse）；
+ * 字段与契约逐字对齐（camelCase 由 raw fetch 的 camelCaseKeys 统一转换）。
+ */
+export interface AdminFrameworkAssessmentSnapshot {
+	framework?: string;
+	standardId?: string;
+	displayName?: string;
+	status?: string;
+	controlsTotal?: number;
+	controlsAssessed?: number;
+	controlsPassed?: number;
+	controlsFailed?: number;
+	controlsUnknown?: number;
+	evaluationError?: string;
+	gateDisabled?: boolean;
+}
+
+export interface AdminComplianceStatusSnapshot {
+	overallStatus?: string;
+	evaluationError?: string;
+	frameworkAssessments?: AdminFrameworkAssessmentSnapshot[];
+	standaloneAssessments?: AdminFrameworkAssessmentSnapshot[];
+	gateDisabledAssessments?: AdminFrameworkAssessmentSnapshot[];
+	assessmentCoverage?: { assessed?: number; total?: number; percent?: number };
+	unknownStandards?: string[];
+	invalidOverrides?: { parameter?: string; reason?: string }[];
+	assessmentVersion?: string;
+	openIssues?: number;
+	openBreaches?: number;
+	pendingPias?: number;
+	pendingDsar?: number;
+	sodRulesEnabled?: number;
+	lastAuditDate?: string;
+	nextAuditDate?: string;
+	gdprCompliant?: boolean;
+	soxCompliant?: boolean;
+	iso27001Compliant?: boolean;
+}
+
 // @generated-api-exempt: compliance 状态 admin twin（W3-C 新增，security_admin 可达）尚未进入
 // shared 生成物，下轮重生成后可迁回 Generated.*。raw fetch 绕过 apiClient，需手动对齐其
 // /bff 前缀 + 信封解包 + camelCase 行为（与上方 getSecurityUserProfile 同模式）。
-export const getAdminComplianceStatusRaw = async () => {
+export const getAdminComplianceStatusRaw = async (): Promise<AdminComplianceStatusSnapshot> => {
 	const token = (await import('@autional/shared')).getAccessToken();
 	const { camelCaseKeys } = await import('@autional/shared');
 	const res = await fetch('/bff/compliance/api/v1/admin/compliance/status', {
@@ -111,7 +152,7 @@ export const getAdminComplianceStatusRaw = async () => {
 	});
 	if (!res.ok) throw new Error(`HTTP ${res.status}`);
 	const body = await res.json();
-	return camelCaseKeys(body.data);
+	return camelCaseKeys(body.data) as AdminComplianceStatusSnapshot;
 };
 export const getNotificationPlatformStats = Generated.adminNotificationsPlatformStats;
 export const getNotificationReadReport = Generated.notificationsReadReport;
