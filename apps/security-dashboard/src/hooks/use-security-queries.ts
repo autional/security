@@ -24,7 +24,7 @@ import {
 	getExportJobs,
 	downloadExport,
 	getComplianceSelfScore,
-	getComplianceProfile,
+	getAdminComplianceProfileRaw,
 	getAdminComplianceStatusRaw,
 	getRetentionPolicies,
 	getISOControls,
@@ -335,16 +335,15 @@ export function useComplianceSelfScore() {
 }
 
 /**
- * 合规配置（enabledFrameworks = 门禁键）。GET /compliance/profile 不挂框架门禁，
- * 用于页面在发请求前隐藏未启用框架的页签。404 = 租户未配置 → 后端按全部启用处理。
+ * 合规配置（enabledFrameworks = 门禁键）。走 admin twin /admin/compliance/profile —— 用户面
+ * GET /compliance/profile 属 api 平面，admin 平面令牌经网关 entry-plane 门禁 403（40000503）。
+ * 该端点不挂框架门禁，用于页面在发请求前隐藏未启用框架的页签。
+ * 404 = 租户未配置 → 后端按全部启用处理（此处抛错 ⇒ isError ⇒ 页签全显，同语义）。
  */
 export function useComplianceProfile() {
 	return useQuery({
 		queryKey: ['compliance', 'profile'],
-		queryFn: async () => {
-			const res = await getComplianceProfile();
-			return (res ?? null) as { enabledFrameworks?: string[] } | null;
-		},
+		queryFn: getAdminComplianceProfileRaw,
 		staleTime: 300_000,
 	});
 }

@@ -154,6 +154,37 @@ export const getAdminComplianceStatusRaw = async (): Promise<AdminComplianceStat
 	const body = await res.json();
 	return camelCaseKeys(body.data) as AdminComplianceStatusSnapshot;
 };
+/**
+ * 合规配置快照（视图模型）：只声明本页读取的字段。
+ * 契约源 = service-compliance swagger（ComplianceProfileResponse）；camelCase 由 raw fetch 统一转换。
+ */
+export interface AdminComplianceProfileSnapshot {
+	tenantId?: string;
+	enabledFrameworks?: string[];
+	selectedStandards?: string[];
+	defaultRetentionDays?: number;
+	autoDeleteEnabled?: boolean;
+	consentTtlYears?: number;
+	maxConcurrentErasures?: number;
+}
+
+// @generated-api-exempt: compliance profile admin twin（与上方 status twin 同模式）尚未进入
+// shared 生成物，下轮重生成后可迁回 Generated.*。raw fetch 绕过 apiClient，需手动对齐其
+// /bff 前缀 + 信封解包 + camelCase 行为。
+// 用户面 GET /compliance/profile 属 api 平面；admin 平面令牌经网关 entry-plane 门禁 403。
+export const getAdminComplianceProfileRaw = async (): Promise<AdminComplianceProfileSnapshot> => {
+	const token = (await import('@autional/shared')).getAccessToken();
+	const { camelCaseKeys } = await import('@autional/shared');
+	const res = await fetch('/bff/compliance/api/v1/admin/compliance/profile', {
+		headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+	});
+	if (res.status === 404) {
+		throw Object.assign(new Error('profile not configured'), { status: 404 });
+	}
+	if (!res.ok) throw new Error(`HTTP ${res.status}`);
+	const body = await res.json();
+	return camelCaseKeys(body.data) as AdminComplianceProfileSnapshot;
+};
 export const getNotificationPlatformStats = Generated.adminNotificationsPlatformStats;
 export const getNotificationReadReport = Generated.notificationsReadReport;
 export const getCommunicationPlatformStats = Generated.adminCommunicationPlatformStats;
