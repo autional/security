@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
 	AlertTriangle,
@@ -19,12 +19,20 @@ import {
 } from 'lucide-react';
 import { Layout, Menu, Button, Typography, Breadcrumb } from 'antd';
 import { useAuth, useLogout, usePermission, usePortalCatalog, useTenantSlug } from '@autional/shared';
+import {
+	getDEVELOPER_PORTAL_URL,
+	getLANDING_SITE_URL,
+	getSTATUS_PAGE_URL,
+} from '@autional/shared';
 import { AppShell, LanguageSwitcher, PortalSwitcher, ThemeToggle, UserMenu } from '@autional/ui';
 import SSEEventStream from './SSEEventStream';
 import { message, notification } from '@/lib/antd-app';
 import { consumeSessionDegraded, SESSION_DEGRADED_NOTICE_KEY } from '@/lib/session-degrade';
 
 const { Text } = Typography;
+
+/** 门户切换器的白名单：只列同类控制台（2026-11-02），见使用处注释。 */
+const CONSOLE_PORTALS = new Set(['admin', 'security', 'user', 'platform']);
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const { t } = useTranslation();
@@ -47,6 +55,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 		audience: 'admin',
 		enabled: can('tenant:admin'),
 	});
+	// 切换器只列同类控制台（2026-11-02，白名单）：内容站（status/trust/developer/brand）
+	// 混进控制台切换器会把用户整页甩出工作上下文。新增内容站不会自动漏进来。
+	const consolePortals = React.useMemo(
+		() => portals.filter((p) => CONSOLE_PORTALS.has(p.code)),
+		[portals],
+	);
 	const internalPath = slug ? pathname.replace(new RegExp(`^/${slug}`), '') || '/' : pathname;
 
 	// S-74：会话过期降级标记 ∈ 已重新认证 → 恢复告知（toast + 关闭降级提示）。
@@ -151,7 +165,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<AppShell
 			brand={
-				<span className="flex items-center gap-2 text-lg font-bold">
+				// 品牌区可点回本门户首页（2026-11-02）：此前纯 <span>，控制台内没有「回家」入口。
+				<Link
+					to={slug ? `/${slug}` : '/'}
+					className="flex items-center gap-2 text-lg font-bold transition-opacity hover:opacity-80"
+				>
 					{collapsed ? (
 						t('app.titleShort')
 					) : (
@@ -159,7 +177,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 							<Shield size="1em" /> {t('app.title')}
 						</>
 					)}
-				</span>
+				</Link>
 			}
 			sidebarCollapsed={collapsed}
 			nav={
@@ -199,7 +217,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 			}
 			headerRight={
 				<>
-					<PortalSwitcher portals={portals} currentPortal="security" />
+					<PortalSwitcher portals={consolePortals} currentPortal="security" />
 					<SSEEventStream />
 					<LanguageSwitcher />
 					<ThemeToggle />
@@ -211,7 +229,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 					/>
 					<UserMenu
 						user={user}
-						items={[{ key: 'logout', type: 'logout', onClick: handleLogout }]}
+						items={[
+							// 站外出口（2026-11-02）：此前只有退出，登录后回不到官网/文档/状态页。
+							{ key: 'docs', type: 'custom', label: t('nav.docs'), href: getDEVELOPER_PORTAL_URL() },
+							{ key: 'status', type: 'custom', label: t('nav.statusPage'), href: getSTATUS_PAGE_URL() },
+							{ key: 'landing', type: 'custom', label: t('nav.officialSite'), href: getLANDING_SITE_URL() },
+							{ key: 'logout', type: 'logout', onClick: handleLogout },
+						]}
 					/>
 				</>
 			}
