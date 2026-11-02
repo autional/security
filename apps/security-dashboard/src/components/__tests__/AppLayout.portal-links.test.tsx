@@ -7,6 +7,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import AppLayout from '../AppLayout';
+import zhCN from '@/i18n/locales/zh-CN.json';
+import enUS from '@/i18n/locales/en-US.json';
 
 const mockCatalog = vi.hoisted(() => ({
 	value: { portals: [] as Array<{ code: string; name?: string; url: string }>, isError: false, isLoading: false },
@@ -64,6 +66,13 @@ describe('安全控制台 · 站外出口与切换器收窄', () => {
 	beforeEach(() => {
 		mockCatalog.value = { portals: [], isError: false, isLoading: false };
 		mockLogout.mockClear();
+	});
+
+	it('i18n 键是顶层平铺键（keySeparator:false 口径）', () => {
+		for (const key of ['nav.docs', 'nav.statusPage', 'nav.officialSite']) {
+			expect(Object.prototype.hasOwnProperty.call(zhCN, key), key + ' 必须在 zh-CN 顶层').toBe(true);
+			expect(Object.prototype.hasOwnProperty.call(enUS, key), key + ' 必须在 en-US 顶层').toBe(true);
+		}
 	});
 
 	it('用户菜单有三条站外出口，登出为末项', async () => {
