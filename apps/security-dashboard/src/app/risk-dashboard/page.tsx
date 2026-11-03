@@ -8,6 +8,7 @@ import { AlertTriangle, ShieldAlert, ShieldCheck, TrendingUp } from 'lucide-reac
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { getRiskDashboard } from '@/lib/api';
+import { asArray } from '@/lib/response';
 import { Alert, AppPageHeader } from '@autional/ui';
 import { UserIdentity } from '@/components/UserIdentity';
 
@@ -130,11 +131,17 @@ export default function RiskDashboardPage() {
 		);
 	};
 
-	const criticalCount = data?.scoreRanges.find((r) => r.range === 'critical')?.count || 0;
-	const highCount = data?.scoreRanges.find((r) => r.range === 'high')?.count || 0;
+	// 契约归一：后端「无数据」返回 []，但异常/历史路径可能是 null —— 统一走 asArray，
+	// 避免对 null 调 find/map 抛 TypeError 被 ErrorBoundary 吞成白屏。
+	const scoreRanges = asArray<RiskRange>(data?.scoreRanges);
+	const topEventTypes = asArray<EventType>(data?.topEventTypes);
+	const topRiskUsers = asArray<RiskUser>(data?.topRiskUsers);
+	const dayCounts = asArray<DayCount>(data?.dayCounts);
+
+	const criticalCount = scoreRanges.find((r) => r.range === 'critical')?.count || 0;
+	const highCount = scoreRanges.find((r) => r.range === 'high')?.count || 0;
 
 	// 7 日趋势：桶键为后端 CountByDay 的 YYYY-MM-DD（+08 业务日界）；今日高亮同口径
-	const dayCounts = data?.dayCounts || [];
 	const maxCount = Math.max(...dayCounts.map((x) => x.count), 1);
 	const todayKey = dayjs().utcOffset(8).format('YYYY-MM-DD');
 
@@ -172,7 +179,7 @@ export default function RiskDashboardPage() {
 					<Card>
 						<Statistic
 							title={t('risk.scoreRangesToday')}
-							value={data?.scoreRanges.length || 0}
+							value={scoreRanges.length}
 							prefix={<ShieldCheck size="1em" />}
 						/>
 					</Card>
@@ -182,18 +189,19 @@ export default function RiskDashboardPage() {
 			<Row gutter={16}>
 				<Col span={12}>
 					<Card title={t('risk.scoreDistribution')} style={{ marginBottom: 16 }}>
-						{(data?.scoreRanges || []).map((r) => (
+						{scoreRanges.map((r) => (
 							<div key={r.range} style={{ marginBottom: 8 }}>
 								<Tag color={levelColors[r.range] || 'default'}>{r.range}</Tag>
 								<span style={{ marginLeft: 8, fontWeight: 'bold' }}>{r.count}</span>
 							</div>
 						))}
+						{!scoreRanges.length && <span>{t('common.noData')}</span>}
 					</Card>
 				</Col>
 				<Col span={12}>
 					<Card title={t('risk.topEventTypes')} style={{ marginBottom: 16 }}>
 						<DataTable
-							dataSource={data?.topEventTypes || []}
+							dataSource={topEventTypes}
 							columns={eventColumns}
 							rowKey="eventType"
 							pagination={false}
@@ -205,7 +213,7 @@ export default function RiskDashboardPage() {
 
 			<Card title={t('risk.topRiskUsers')} style={{ marginBottom: 16 }}>
 				<DataTable
-					dataSource={data?.topRiskUsers || []}
+					dataSource={topRiskUsers}
 					columns={userColumns}
 					rowKey="userId"
 					pagination={false}
@@ -216,7 +224,7 @@ export default function RiskDashboardPage() {
 
 			<Card title={t('risk.trend7d')}>
 				<div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 120 }}>
-					{(data?.dayCounts || []).map((d) => {
+					{dayCounts.map((d) => {
 						const height = Math.max((d.count / maxCount) * 100, 4);
 						const bucketDay = String(d.date).slice(0, 10);
 						const isToday = bucketDay === todayKey;

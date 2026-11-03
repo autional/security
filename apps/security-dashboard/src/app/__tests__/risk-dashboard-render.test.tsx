@@ -62,4 +62,29 @@ describe('RiskDashboardPage', () => {
 			await screen.findByText('近 7 天无高风险用户（最高分 ≥ 60）'),
 		).toBeInTheDocument();
 	});
+
+	// 2026-11-02 事故回归：Go nil 切片序列化为 null，旧实现直接 `data?.scoreRanges.find(...)`
+	// 只保护了 data、没保护 scoreRanges → TypeError → ErrorBoundary 白屏。
+	// 页面必须把 null/缺失归一为空数组并渲染空态，而不是抛错。
+	it('契约：scoreRanges 为 null 时不崩溃，渲染空态', async () => {
+		mockLoaded({
+			scoreRanges: null,
+			topEventTypes: null,
+			topRiskUsers: null,
+			dayCounts: null,
+		});
+		render(<RiskDashboardPage />);
+
+		expect(await screen.findByText('评分分布（今日）')).toBeInTheDocument();
+		// 卡片计分不得因 null 抛错（今日事件卡仍渲染 0）
+		expect(screen.getByText('今日事件')).toBeInTheDocument();
+	});
+
+	it('契约：数组字段整体缺失时按空数据处理', async () => {
+		mockGetRiskDashboard.mockResolvedValue({ tenantId: 't1', todayTotal: 0 });
+		render(<RiskDashboardPage />);
+
+		expect(await screen.findByText('评分分布（今日）')).toBeInTheDocument();
+		expect(screen.getAllByText('暂无数据').length).toBeGreaterThan(0);
+	});
 });
