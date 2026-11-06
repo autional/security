@@ -16,6 +16,7 @@ import {
 	RefreshCw,
 	Settings,
 	Shield,
+	SlidersHorizontal,
 } from 'lucide-react';
 import { Layout, Menu, Button, Typography, Breadcrumb } from 'antd';
 import { useAuth, useLogout, usePermission, usePortalCatalog, useTenantSlug } from '@autional/shared';
@@ -31,8 +32,11 @@ import { consumeSessionDegraded, SESSION_DEGRADED_NOTICE_KEY } from '@/lib/sessi
 
 const { Text } = Typography;
 
-/** 门户切换器的白名单：只列同类控制台（2026-11-02），见使用处注释。 */
-const CONSOLE_PORTALS = new Set(['admin', 'security', 'user', 'platform']);
+/** 门户切换器的白名单：只列同类控制台（2026-11-02），见使用处注释。
+ *  2026-11 接入配置中心 —— config 同属管理面平面，加入白名单。 */
+const CONSOLE_PORTALS = new Set(['config', 'admin', 'security', 'user', 'platform']);
+/** 目录里的 code → 图标；config 需显式补一个，否则落到 Globe 兜底。 */
+const PORTAL_ICONS = { config: SlidersHorizontal };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const { t } = useTranslation();
@@ -217,7 +221,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 			}
 			headerRight={
 				<>
-					<PortalSwitcher portals={consolePortals} currentPortal="security" />
+					<PortalSwitcher portals={consolePortals} currentPortal="security" iconForPortal={PORTAL_ICONS} />
 					<SSEEventStream />
 					<LanguageSwitcher />
 					<ThemeToggle />
