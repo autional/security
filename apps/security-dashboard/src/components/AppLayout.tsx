@@ -1,5 +1,6 @@
 'use client';
 
+import { useSessionActivity } from '../hooks/use-session-activity';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +40,7 @@ const CONSOLE_PORTALS = new Set(['config', 'secret', 'admin', 'security', 'user'
 const PORTAL_ICONS = { config: SlidersHorizontal };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+	useSessionActivity();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
