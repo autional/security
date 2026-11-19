@@ -9,7 +9,7 @@ import { SecurityGuard, SecurityAdminGuard, useAuthStore } from '@autional/share
 import NoAccessPage from '../NoAccessPage';
 // 会话夹具（未过期 token + 已就绪会话）与 app-route-guards 共用同一份：
 // 占位 token 会触发预判式刷新 → jsdom Network Error → 会话被清空（详见该文件注释）。
-import { seedSession } from '@/test/auth-fixture';
+import { seedSession, resetAuthAfterTest } from '@/test/auth-fixture';
 
 const NO_ACCESS_TEXT = '抱歉，您当前账号的角色无权访问此页面。如需访问，请切换具备相应权限的账号。';
 
@@ -31,8 +31,8 @@ describe('guard fallback chain (S-75)', () => {
 	});
 
 	afterEach(() => {
-		localStorage.clear();
-		useAuthStore.getState().clearAuth();
+		// 先卸载再清会话（顺序不可颠倒，详见 auth-fixture.resetAuthAfterTest 注释）。
+		resetAuthAfterTest();
 	});
 
 	describe('SecurityGuard (top-level entry)', () => {

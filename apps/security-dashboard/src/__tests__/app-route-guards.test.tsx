@@ -18,7 +18,7 @@ import { useAuthStore } from '@autional/shared';
 // 占位 token 会被判「已过期」→ 预判式刷新 → jsdom 下 refresh 必然 Network Error →
 // onUnauthorized() 清空会话；于是用例断言的分支从「按角色判」漂移成「空会话 fail-closed」
 // （负例假绿、正例偶发红）。
-import { seedSession, readSeedSession } from '@/test/auth-fixture';
+import { seedSession, readSeedSession, resetAuthAfterTest } from '@/test/auth-fixture';
 
 const NO_ACCESS_TEXT = '抱歉，您当前账号的角色无权访问此页面。如需访问，请切换具备相应权限的账号。';
 
@@ -83,8 +83,10 @@ describe('App route table — SecurityAdminGuard coverage (QA F-02)', () => {
 	});
 
 	afterEach(() => {
-		localStorage.clear();
-		useAuthStore.getState().clearAuth();
+		// 先卸载再清会话：清会话是 zustand setState，会同步通知已挂载订阅者；
+		// 若此时组件仍在树上（RTL 的 cleanup 在本钩子之后才跑），就会在 act 外重渲染。
+		// 详见 auth-fixture.resetAuthAfterTest 注释。
+		resetAuthAfterTest();
 		mockRiskDashboard.mockReset();
 	});
 
