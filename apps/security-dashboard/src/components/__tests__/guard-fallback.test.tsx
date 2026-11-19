@@ -12,9 +12,28 @@ const NO_ACCESS_TEXT = '抱歉，您当前账号的角色无权访问此页面�
 
 vi.stubGlobal('fetch', () => new Promise(() => {}));
 
+/**
+ * 测试用 access token —— payload 必须是**可解码且未过期**的 JSON。
+ *
+ * 为什么不能用 `'header.payload.signature'` 这种占位串：`isTokenExpired()` 解不出 `exp`
+ * 就按「已过期」处理 → axios 请求拦截器「预判式刷新」→ jsdom 下 refresh 请求必然
+ * Network Error → `refreshToken()` 失败 → `onUnauthorized()` → `clearSession()`：
+ * 种子会话的 `tenants` / `permissions` 在断言前就被清空。此时守卫看到的是
+ * `role === null` + `permissions === []`，用例名说的是「验 `'*'` 豁免」，实际断言的是
+ * 别的分支（rc.70 靠当时「role === null 穿透」的旧口径侥幸放行，rc.71 改成
+ * 未就绪/已就绪两态后即失效）。给一个真能解码、且远未过期的 token，播种会话才
+ * 是「已就绪会话」，本文件各用例才真正落在自己声称的分支上。
+ */
+const TEST_TOKEN_EXP = 9_999_999_999; // 2286 年，测试期内永不过期
+function makeTestAccessToken(): string {
+	const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
+	const payload = btoa(JSON.stringify({ sub: 'u-test', exp: TEST_TOKEN_EXP }));
+	return `${header}.${payload}.test-signature`;
+}
+
 function seedSession(role: string, permissions: string[]) {
 	const store = useAuthStore.getState();
-	store.setAuth('header.payload.signature', 'refresh-token', {
+	store.setAuth(makeTestAccessToken(), 'refresh-token', {
 		id: 'u-test',
 		username: 'tester',
 		email: 'tester@test.dev',
@@ -91,6 +110,15 @@ describe('guard fallback chain (S-75)', () => {
 				</SecurityGuard>,
 			);
 			expect(await screen.findByText('ENTRY OK')).toBeInTheDocument();
+
+			// 反作弊锁：断言时种子会话必须**仍然完整**（未被 clearAuth 清空），
+			// 否则本用例会退化成「空权限 fail-closed 的反面」——就算把 shared 里的
+			// `'*'` 豁免整段删掉，用例也照样绿，等于没锁住。
+			const state = useAuthStore.getState();
+			expect(state.permissions).toEqual(['*']);
+			expect(state.tenants.find((t) => t.id === 't-1')?.role).toBe('admin');
+			// 角色确实不在 allowlist 内（'admin' ∉ security 准入角色）——豁免才有意义。
+			expect(['super_admin', 'security_admin', 'auditor']).not.toContain('admin');
 		});
 	});
 
