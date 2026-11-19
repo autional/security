@@ -41,7 +41,12 @@ export const getAuditFindingById = Generated.adminComplianceAuditFindingsByAudit
 export const updateAuditFinding = Generated.adminComplianceAuditFindingsByAuditFindingsPut;
 export const getSessions = Generated.sessions;
 export const getActiveSessionCount = Generated.adminSessionsActiveCount;
-export const terminateSession = Generated.sessionsBySessionsDelete;
+// 终止会话（2026-11-08 QA 修复）：原 `/session/api/v1/sessions/:id` 属 **api 平面**，
+// 安全门户（admin 平面）恒 403 ⇒ 动作必败。改走管理面批量撤销端点（单元素数组）。
+// 回归：shared/qa-suite/security-portal（api-tests C 组 + e2e-smoke S7）。
+export const terminateSession = async (sessionId: string) => {
+	await Generated.adminSessionsBulkDelete({ session_ids: [sessionId], reason: 'security-portal terminate' });
+};
 export const getSecurityReport = Generated.adminAuditReportsSecurity;
 export const getComplianceReport = Generated.adminAuditReportsCompliance;
 export const getExportJobs = Generated.adminAuditExportJobs;

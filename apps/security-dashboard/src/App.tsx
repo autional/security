@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, Outlet, useLocation, useParams } from 'react-router';
 import AppLayout from './components/AppLayout';
 import NoAccessPage from './components/NoAccessPage';
+import TenantSegmentGate from './components/TenantSegmentGate';
 import {
 	SecurityGuard,
 	SecurityAdminGuard,
@@ -105,9 +106,11 @@ export default function App() {
 						element={
 							/* notFound：确定性未知 slug（by-slug 404）原地渲染 404，不发弹跳（F-W6）
 							   fallback：非准入角色的兜底页（S-75），取代整页白屏死路 */
-							<SecurityGuard notFound={<NotFoundPage />} fallback={<NoAccessPage />}>
-								<LayoutWrapper />
-							</SecurityGuard>
+							<TenantSegmentGate>
+								<SecurityGuard notFound={<NotFoundPage />} fallback={<NoAccessPage />}>
+									<LayoutWrapper />
+								</SecurityGuard>
+							</TenantSegmentGate>
 						}
 					>
 						{appRoutes()}
@@ -236,11 +239,15 @@ function appRoutes() {
 			<Route
 				path="risk-dashboard"
 				element={
-					<PageTransition>
-						<Suspense fallback={<PageLoader />}>
-							<RiskDashboardPage />
-						</Suspense>
-					</PageTransition>
+					/* 数据面（identity /admin/security/risk-dashboard）要求 super_admin/admin/security_admin；
+					   auditor 属准入角色但数据面 403 ⇒ 用内层守卫落兜底页，避免「进得去、全加载失败」（2026-11-08 QA F-02） */
+					<SecurityAdminGuard fallback={<NoAccessPage showHome />}>
+						<PageTransition>
+							<Suspense fallback={<PageLoader />}>
+								<RiskDashboardPage />
+							</Suspense>
+						</PageTransition>
+					</SecurityAdminGuard>
 				}
 			/>
 			<Route

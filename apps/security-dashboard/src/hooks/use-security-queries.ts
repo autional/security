@@ -83,7 +83,7 @@ export function useActiveSessions() {
 export function useTerminateSession() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: ({ id }: { id: string }) => terminateSession(id, {}),
+		mutationFn: ({ id }: { id: string }) => terminateSession(id),
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ['sessions'] });
 		},

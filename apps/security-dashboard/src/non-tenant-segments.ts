@@ -15,8 +15,7 @@
  */
 import { registerNonTenantSegments } from '@autional/shared';
 
-export const NON_TENANT_SEGMENTS = [
-	'alerts',
+export const NON_TENANT_SEGMENTS = [	'alerts',
 	'anomalies',
 	'archives',
 	'audit-findings',
@@ -38,3 +37,13 @@ export const NON_TENANT_SEGMENTS = [
 ] as const;
 
 registerNonTenantSegments(NON_TENANT_SEGMENTS);
+
+/**
+ * 首段是否为本站业务路由（因而**不是**租户 slug）。
+ * 用于路由守卫：`/:tenantSlug` 会把 `/audit-logs` 这类路径当租户段匹配，
+ * 导致「无 slug 深链静默渲染总览」（2026-11-08 QA F-04）。
+ */
+export function isNonTenantSegment(segment?: string | null): boolean {
+	if (!segment) return false;
+	return (NON_TENANT_SEGMENTS as readonly string[]).includes(segment);
+}
