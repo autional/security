@@ -7,44 +7,13 @@ import React from 'react';
 // 非准入角色渲染 NoAccessPage 而非 `return null` 白屏。
 import { SecurityGuard, SecurityAdminGuard, useAuthStore } from '@autional/shared';
 import NoAccessPage from '../NoAccessPage';
+// 会话夹具（未过期 token + 已就绪会话）与 app-route-guards 共用同一份：
+// 占位 token 会触发预判式刷新 → jsdom Network Error → 会话被清空（详见该文件注释）。
+import { seedSession } from '@/test/auth-fixture';
 
 const NO_ACCESS_TEXT = '抱歉，您当前账号的角色无权访问此页面。如需访问，请切换具备相应权限的账号。';
 
 vi.stubGlobal('fetch', () => new Promise(() => {}));
-
-/**
- * 测试用 access token —— payload 必须是**可解码且未过期**的 JSON。
- *
- * 为什么不能用 `'header.payload.signature'` 这种占位串：`isTokenExpired()` 解不出 `exp`
- * 就按「已过期」处理 → axios 请求拦截器「预判式刷新」→ jsdom 下 refresh 请求必然
- * Network Error → `refreshToken()` 失败 → `onUnauthorized()` → `clearSession()`：
- * 种子会话的 `tenants` / `permissions` 在断言前就被清空。此时守卫看到的是
- * `role === null` + `permissions === []`，用例名说的是「验 `'*'` 豁免」，实际断言的是
- * 别的分支（rc.70 靠当时「role === null 穿透」的旧口径侥幸放行，rc.71 改成
- * 未就绪/已就绪两态后即失效）。给一个真能解码、且远未过期的 token，播种会话才
- * 是「已就绪会话」，本文件各用例才真正落在自己声称的分支上。
- */
-const TEST_TOKEN_EXP = 9_999_999_999; // 2286 年，测试期内永不过期
-function makeTestAccessToken(): string {
-	const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
-	const payload = btoa(JSON.stringify({ sub: 'u-test', exp: TEST_TOKEN_EXP }));
-	return `${header}.${payload}.test-signature`;
-}
-
-function seedSession(role: string, permissions: string[]) {
-	const store = useAuthStore.getState();
-	store.setAuth(makeTestAccessToken(), 'refresh-token', {
-		id: 'u-test',
-		username: 'tester',
-		email: 'tester@test.dev',
-		status: 'active',
-	} as never);
-	useAuthStore.setState({
-		tenants: [{ id: 't-1', name: 'Tenant One', role }],
-		currentTenantId: 't-1',
-		permissions,
-	});
-}
 
 function renderGuarded(ui: React.ReactNode) {
 	const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });

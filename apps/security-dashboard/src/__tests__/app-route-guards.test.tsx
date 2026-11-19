@@ -14,6 +14,11 @@ import { MemoryRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
 import { useAuthStore } from '@autional/shared';
+// 会话夹具与 guard-fallback 统一：真能解码、未过期的 token。
+// 占位 token 会被判「已过期」→ 预判式刷新 → jsdom 下 refresh 必然 Network Error →
+// onUnauthorized() 清空会话；于是用例断言的分支从「按角色判」漂移成「空会话 fail-closed」
+// （负例假绿、正例偶发红）。
+import { seedSession, readSeedSession } from '@/test/auth-fixture';
 
 const NO_ACCESS_TEXT = '抱歉，您当前账号的角色无权访问此页面。如需访问，请切换具备相应权限的账号。';
 
@@ -46,30 +51,11 @@ vi.mock('@autional/shared', async (importOriginal) => {
 	};
 });
 
-// 网络全挂起（不发真请求，也绝不应答）：
-// ① 避免 jsdom 真发请求的噪声；
-// ② 更关键——bootstrap 的权限/租户查询若**失败**，401 会走 AuthService.onUnauthorized()
-//    清空会话，本用例的 seed 会话会在断言途中被清掉（实测表现为 NoAccessPage 被卸载、
-//    findByText 拿到的节点 detached 的偶发红）。挂起后查询恒 loading，会话稳定。
+// 网络全挂起（不发真请求，也绝不应答）：避免 jsdom 真发请求的噪声。
+// 注意：**不再**把 XMLHttpRequest.prototype.send 打空。旧写法用空实现吞掉请求，
+// 等于把「会话是否被 401 清空」这一层证据一并抹掉；现在会话稳定性由「未过期 token」
+// 保证：refresh 不会被触发，也就不会有 onUnauthorized() 清会话。
 vi.stubGlobal('fetch', () => new Promise(() => {}));
-// axios 用 XHR 适配器，且 platform 在模块求值时已捕获 XMLHttpRequest 类
-// ⇒ 只能在**原型**上把 send 打成空实现（对已捕获的类同样生效）。
-vi.spyOn(globalThis.XMLHttpRequest.prototype, 'send').mockImplementation(() => {});
-
-function seedSession(role: string, permissions: string[]) {
-	const store = useAuthStore.getState();
-	store.setAuth('header.payload.signature', 'refresh-token', {
-		id: 'u-test',
-		username: 'tester',
-		email: 'tester@test.dev',
-		status: 'active',
-	} as never);
-	useAuthStore.setState({
-		tenants: [{ id: 't-1', name: 'Tenant One', role }],
-		currentTenantId: 't-1',
-		permissions,
-	});
-}
 
 function renderApp(path: string) {
 	const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -114,6 +100,9 @@ describe('App route table — SecurityAdminGuard coverage (QA F-02)', () => {
 		expect(screen.getByRole('button', { name: '返回首页' })).toBeInTheDocument();
 		// 守卫在渲染前就短路，数据面不应被调用
 		expect(mockRiskDashboard).not.toHaveBeenCalled();
+		// 反作弊锁：断言时必须仍是「已就绪的 auditor 会话」，而不是被 401/late-refresh
+		// 清成空会话后 fail-closed 的假绿（空会话同样会显示兜底页）。
+		expect(readSeedSession()).toEqual({ role: 'auditor', permissions: ['audit:read'], hasToken: true });
 	});
 
 	it('route /:slug/risk-dashboard admits security_admin (dashboard body visible)', async () => {
